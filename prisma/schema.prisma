@@ -1,13 +1,74 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  orders       Order[]
+
+  @@map("users")
+}
+
+model Restaurant {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  imageUrl    String
+  category    String
+  createdAt   DateTime @default(now())
+  menus       Menu[]
+
+  @@map("restaurants")
+}
+
+model Menu {
+  id           String      @id @default(uuid())
+  restaurantId String
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  name         String
+  description  String
+  price        Int
+  imageUrl     String
+  createdAt    DateTime    @default(now())
+  orderItems   OrderItem[]
+
+  @@map("menus")
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status     String      // "PENDING" | "PREPARING" | "DELIVERING" | "COMPLETED"
+  totalPrice Int
+  address    String
+  createdAt  DateTime    @default(now())
+  orderItems OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuId    String
+  menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  quantity  Int
+  price     Int      // 주문 당시 메뉴 가격 보존
+  createdAt DateTime @default(now())
+
+  @@map("order_items")
 }
