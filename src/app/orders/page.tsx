@@ -18,7 +18,8 @@ interface Order {
   status: 'PENDING' | 'PREPARING' | 'DELIVERING' | 'COMPLETED';
   totalPrice: number;
   address: string;
-  deliveryRequest?: string | null;
+  riderRequest?: string | null;
+  shopRequest?: string | null;
   createdAt: string;
   orderItems: OrderItem[];
 }
@@ -218,10 +219,16 @@ export default function OrdersPage() {
                     <span style={{ color: 'var(--text-muted)' }}>📍 배달 주소 : </span>
                     <span style={{ color: 'var(--text-dark)' }}>{order.address}</span>
                   </div>
-                  {order.deliveryRequest && (
+                  {order.shopRequest && order.shopRequest !== '없음' && (
                     <div>
-                      <span style={{ color: 'var(--text-muted)' }}>💬 배달 요청사항 : </span>
-                      <span style={{ color: 'var(--text-dark)', fontWeight: '500' }}>{order.deliveryRequest}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>👨‍🍳 가게 요청사항 : </span>
+                      <span style={{ color: 'var(--text-dark)', fontWeight: '500' }}>{order.shopRequest}</span>
+                    </div>
+                  )}
+                  {order.riderRequest && (
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>🛵 라이더 요청사항 : </span>
+                      <span style={{ color: 'var(--text-dark)', fontWeight: '500' }}>{order.riderRequest}</span>
                     </div>
                   )}
                 </div>
