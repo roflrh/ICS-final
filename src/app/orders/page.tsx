@@ -18,6 +18,7 @@ interface Order {
   status: 'PENDING' | 'PREPARING' | 'DELIVERING' | 'COMPLETED';
   totalPrice: number;
   address: string;
+  deliveryRequest?: string | null;
   createdAt: string;
   orderItems: OrderItem[];
 }
@@ -211,9 +212,17 @@ export default function OrdersPage() {
                   gap: '12px',
                 }}
               >
-                <div>
-                  <span style={{ color: 'var(--text-muted)' }}>📍 배달 주소 : </span>
-                  <span style={{ color: '#fff' }}>{order.address}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div>
+                    <span style={{ color: 'var(--text-muted)' }}>📍 배달 주소 : </span>
+                    <span style={{ color: '#fff' }}>{order.address}</span>
+                  </div>
+                  {order.deliveryRequest && (
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>💬 배달 요청사항 : </span>
+                      <span style={{ color: '#fff', fontWeight: '500' }}>{order.deliveryRequest}</span>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <span style={{ color: 'var(--text-muted)' }}>결제 금액 : </span>
@@ -255,6 +264,7 @@ export default function OrdersPage() {
                   {/* 타임라인 각 단계 노드 */}
                   {Object.entries(STATUS_MAP).map(([key, value]) => {
                     const isActive = STATUS_MAP[order.status].step >= value.step;
+                    const isCurrent = order.status === key;
                     return (
                       <div
                         key={key}
@@ -275,6 +285,8 @@ export default function OrdersPage() {
                             border: '4px solid #1a202c',
                             boxShadow: isActive ? `0 0 10px ${value.color}` : 'none',
                             transition: 'all 0.5s ease',
+                            animation: isCurrent ? 'statusPulse 2s infinite ease-in-out' : 'none',
+                            ...({ '--pulse-color': value.color } as React.CSSProperties),
                           }}
                         />
                         <span
@@ -323,6 +335,24 @@ export default function OrdersPage() {
           );
         })}
       </div>
+
+      {/* 펄스 애니메이션 키프레임 */}
+      <style>{`
+        @keyframes statusPulse {
+          0% {
+            box-shadow: 0 0 4px var(--pulse-color);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 0 18px var(--pulse-color);
+            transform: scale(1.15);
+          }
+          100% {
+            box-shadow: 0 0 4px var(--pulse-color);
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 }
