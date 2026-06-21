@@ -106,7 +106,7 @@ export default function OrdersPage() {
       <div style={{ maxWidth: '600px', margin: '80px auto', padding: '16px', textAlign: 'center' }}>
         <div className="glass-panel" style={{ padding: '60px 40px', borderRadius: 'var(--radius-md)' }}>
           <span style={{ fontSize: '4rem', marginBottom: '24px', display: 'block' }}>📦</span>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '12px', color: '#fff' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '12px', color: 'var(--text-dark)' }}>
             주문 내역이 없습니다.
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '32px' }}>
@@ -122,7 +122,7 @@ export default function OrdersPage() {
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.8rem', fontWeight: '900', marginBottom: '24px', color: '#fff' }}>내 주문 내역</h1>
+      <h1 style={{ fontSize: '1.8rem', fontWeight: '900', marginBottom: '24px', color: 'var(--text-dark)' }}>내 주문 내역</h1>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
         {orders.map((order) => {
@@ -186,7 +186,7 @@ export default function OrdersPage() {
                           border: '1px solid var(--panel-border)',
                         }}
                       />
-                      <span style={{ fontSize: '0.95rem', fontWeight: '600', color: '#fff' }}>
+                      <span style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-dark)' }}>
                         {item.menu.name} <span style={{ color: 'var(--text-muted)', fontWeight: '500' }}>x {item.quantity}</span>
                       </span>
                     </div>
@@ -200,7 +200,8 @@ export default function OrdersPage() {
               {/* 배송지 및 총액 정보 */}
               <div
                 style={{
-                  background: 'rgba(0,0,0,0.15)',
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
                   padding: '16px 20px',
                   borderRadius: '8px',
                   marginBottom: '24px',
@@ -215,12 +216,12 @@ export default function OrdersPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <div>
                     <span style={{ color: 'var(--text-muted)' }}>📍 배달 주소 : </span>
-                    <span style={{ color: '#fff' }}>{order.address}</span>
+                    <span style={{ color: 'var(--text-dark)' }}>{order.address}</span>
                   </div>
                   {order.deliveryRequest && (
                     <div>
                       <span style={{ color: 'var(--text-muted)' }}>💬 배달 요청사항 : </span>
-                      <span style={{ color: '#fff', fontWeight: '500' }}>{order.deliveryRequest}</span>
+                      <span style={{ color: 'var(--text-dark)', fontWeight: '500' }}>{order.deliveryRequest}</span>
                     </div>
                   )}
                 </div>
@@ -243,7 +244,7 @@ export default function OrdersPage() {
                       left: '0',
                       right: '0',
                       height: '4px',
-                      background: 'rgba(255,255,255,0.08)',
+                      background: '#e2e8f0',
                       zIndex: 1,
                     }}
                   />
@@ -281,8 +282,8 @@ export default function OrdersPage() {
                             width: '28px',
                             height: '28px',
                             borderRadius: '50%',
-                            background: isActive ? value.color : '#2d3748',
-                            border: '4px solid #1a202c',
+                            background: isActive ? value.color : '#cbd5e1',
+                            border: '4px solid #ffffff',
                             boxShadow: isActive ? `0 0 10px ${value.color}` : 'none',
                             transition: 'all 0.5s ease',
                             animation: isCurrent ? 'statusPulse 2s infinite ease-in-out' : 'none',
@@ -294,7 +295,7 @@ export default function OrdersPage() {
                             marginTop: '8px',
                             fontSize: '0.8rem',
                             fontWeight: '700',
-                            color: isActive ? '#fff' : 'var(--text-muted)',
+                            color: isActive ? 'var(--text-dark)' : 'var(--text-muted)',
                             transition: 'all 0.5s ease',
                           }}
                         >

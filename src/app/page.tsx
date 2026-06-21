@@ -64,7 +64,7 @@ export default function HomePage() {
             fontWeight: '900',
             marginBottom: '12px',
             letterSpacing: '-0.02em',
-            background: 'linear-gradient(to right, #fff, var(--text-muted))',
+            background: 'linear-gradient(to right, var(--text-dark), var(--text-muted))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}
@@ -101,7 +101,7 @@ export default function HomePage() {
                 fontSize: '0.88rem',
                 borderRadius: '8px',
                 background: activeCategory === category ? 'var(--primary)' : 'transparent',
-                color: activeCategory === category ? '#white' : 'var(--text-muted)',
+                color: activeCategory === category ? '#fff' : 'var(--text-muted)',
                 boxShadow: activeCategory === category ? '0 4px 12px var(--primary-glow)' : 'none',
               }}
             >
@@ -223,7 +223,7 @@ export default function HomePage() {
 
               {/* 식당 텍스트 설명 */}
               <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '6px', color: '#fff' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '6px', color: 'var(--text-dark)' }}>
                   {restaurant.name}
                 </h3>
                 

@@ -101,7 +101,7 @@ export default function CartPage() {
       <div style={{ maxWidth: '600px', margin: '80px auto', padding: '16px', textAlign: 'center' }}>
         <div className="glass-panel" style={{ padding: '60px 40px', borderRadius: 'var(--radius-md)' }}>
           <span style={{ fontSize: '4rem', marginBottom: '24px', display: 'block' }}>🛒</span>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '12px', color: '#fff' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '12px', color: 'var(--text-dark)' }}>
             장바구니가 비어 있습니다.
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '32px' }}>
@@ -117,7 +117,7 @@ export default function CartPage() {
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.8rem', fontWeight: '900', marginBottom: '24px', color: '#fff' }}>장바구니</h1>
+      <h1 style={{ fontSize: '1.8rem', fontWeight: '900', marginBottom: '24px', color: 'var(--text-dark)' }}>장바구니</h1>
 
       <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
         {/* 장바구니 상품 목록 영역 */}
@@ -131,7 +131,7 @@ export default function CartPage() {
             }}
           >
             <span style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: '700' }}>현재 주문 중인 식당</span>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: '800', color: '#fff', marginTop: '4px' }}>
+            <h2 style={{ fontSize: '1.3rem', fontWeight: '800', color: 'var(--text-dark)', marginTop: '4px' }}>
               🏪 {restaurantName}
             </h2>
           </div>
@@ -163,7 +163,7 @@ export default function CartPage() {
                   }}
                 />
                 <div>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#fff' }}>{item.name}</h3>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--text-dark)' }}>{item.name}</h3>
                   <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
                     {item.price.toLocaleString('ko-KR')}원
                   </span>
@@ -176,9 +176,9 @@ export default function CartPage() {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    background: 'rgba(0,0,0,0.3)',
+                    background: '#f1f5f9',
                     borderRadius: '8px',
-                    border: '1px solid var(--panel-border)',
+                    border: '1px solid #e2e8f0',
                     overflow: 'hidden',
                   }}
                 >
@@ -232,7 +232,7 @@ export default function CartPage() {
         {/* 결제 정보 요약 및 배송지 입력 영역 */}
         <div style={{ flex: '1 1 300px' }}>
           <div className="glass-panel" style={{ padding: '28px', borderRadius: 'var(--radius-md)', position: 'sticky', top: '100px' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '20px', color: '#fff' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '20px', color: 'var(--text-dark)' }}>
               결제 및 배송지 정보
             </h2>
 
@@ -269,8 +269,8 @@ export default function CartPage() {
                         cursor: 'pointer',
                         padding: '12px',
                         borderRadius: 'var(--radius-sm)',
-                        background: requestType === option ? 'rgba(255, 94, 58, 0.08)' : 'rgba(0, 0, 0, 0.15)',
-                        border: `1px solid ${requestType === option ? 'var(--primary)' : 'var(--panel-border)'}`,
+                        background: requestType === option ? 'rgba(234, 88, 12, 0.08)' : '#f8fafc',
+                        border: `1px solid ${requestType === option ? 'var(--primary)' : '#e2e8f0'}`,
                         transition: 'var(--transition-smooth)',
                       }}
                     >
@@ -334,9 +334,9 @@ export default function CartPage() {
                     justifyContent: 'space-between',
                     fontSize: '1.15rem',
                     fontWeight: '800',
-                    color: '#fff',
+                    color: 'var(--text-dark)',
                     paddingTop: '12px',
-                    borderTop: '1px solid rgba(255,255,255,0.08)',
+                    borderTop: '1px solid rgba(0,0,0,0.08)',
                   }}
                 >
                   <span>총 결제금액</span>

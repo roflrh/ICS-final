@@ -154,7 +154,7 @@ export default function RestaurantDetailPage() {
                 </span>
               )}
             </div>
-            <h1 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '8px', color: '#fff' }}>
+            <h1 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '8px', color: 'var(--text-dark)' }}>
               {restaurant.name}
             </h1>
             
@@ -229,7 +229,7 @@ export default function RestaurantDetailPage() {
                 }}
               />
               <div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: '#fff', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: 'var(--text-dark)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                   {menu.isPopular && (
                     <span className="badge badge-popular" style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
                       👑 인기
@@ -253,8 +253,8 @@ export default function RestaurantDetailPage() {
               disabled={addingId === menu.id}
               style={{
                 minWidth: '130px',
-                background: addingId === menu.id ? 'var(--success)' : 'linear-gradient(135deg, var(--primary) 0%, #ff3e1a 100%)',
-                boxShadow: addingId === menu.id ? '0 4px 15px rgba(16, 185, 129, 0.3)' : '0 4px 15px var(--primary-glow)',
+                background: addingId === menu.id ? 'var(--success)' : 'var(--primary)',
+                boxShadow: addingId === menu.id ? '0 4px 14px rgba(5, 150, 105, 0.2)' : '0 4px 14px var(--primary-glow)',
                 transition: 'all 0.2s ease',
               }}
             >
