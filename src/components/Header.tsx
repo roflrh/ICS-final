@@ -61,44 +61,12 @@ export default function Header() {
           🍔 <span>바이브 딜리버리</span>
         </Link>
         <nav className="nav-links">
-          <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>
-            식당목록
-          </Link>
-          <Link
-            href="/cart"
-            className={`nav-link ${pathname === '/cart' ? 'active' : ''}`}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            장바구니
-            {cartCount > 0 && (
-              <span
-                style={{
-                  background: 'var(--primary)',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '18px',
-                  height: '18px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '11px',
-                  fontWeight: 'bold',
-                }}
-              >
-                {cartCount}
-              </span>
-            )}
-          </Link>
-
           {!loading && (
             <>
               {user ? (
                 <>
-                  <Link href="/orders" className={`nav-link ${pathname === '/orders' ? 'active' : ''}`}>
-                    주문내역
-                  </Link>
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}>
-                    👋&nbsp;<strong style={{ color: 'var(--text-main)' }}>{user.name}</strong>님
+                    👋&nbsp;<strong style={{ color: 'var(--text-dark)' }}>{user.name}</strong>님
                   </span>
                   <button
                     onClick={handleLogout}
