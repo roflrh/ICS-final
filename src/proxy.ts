@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
   const { pathname } = req.nextUrl;
 
@@ -32,7 +32,7 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// 미들웨어를 실행할 경로 매처(Matcher) 설정
+// 프록시를 실행할 경로 매처(Matcher) 설정
 export const config = {
   matcher: [
     '/orders/:path*',

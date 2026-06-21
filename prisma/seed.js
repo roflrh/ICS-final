@@ -1,5 +1,12 @@
+require('dotenv').config();
+const { Pool } = require('pg');
+const { PrismaPg } = require('@prisma/adapter-pg');
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+const connectionString = process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter, log: ['error'] });
 
 async function main() {
   // 기존 데이터 초기화 (Cascade 설정으로 인해 Restaurant 삭제 시 Menu 등 연쇄 삭제됨)
