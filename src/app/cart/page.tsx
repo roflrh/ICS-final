@@ -20,6 +20,16 @@ export default function CartPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [requestType, setRequestType] = useState('문 앞에 두고 벨 누르기');
+  const [customRequest, setCustomRequest] = useState('');
+
+  const requestOptions = [
+    '문 앞에 두고 벨 누르기',
+    '벨 누르지 말고 문 앞에 두기',
+    '직접 수령',
+    '직접 입력',
+  ];
+
   // 최근 저장한 배달 주소가 있다면 자동 기입
   useEffect(() => {
     const savedAddress = localStorage.getItem('last_delivery_address');
@@ -53,6 +63,7 @@ export default function CartPage() {
 
     try {
       // 2. 주문 생성 API 전송
+      const finalRequest = requestType === '직접 입력' ? customRequest : requestType;
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,6 +71,7 @@ export default function CartPage() {
           items: cartItems,
           address,
           totalPrice: cartTotalPrice,
+          deliveryRequest: finalRequest,
         }),
       });
 
@@ -241,6 +253,57 @@ export default function CartPage() {
             )}
 
             <form onSubmit={handleOrderSubmit}>
+              {/* 배달 요청사항 */}
+              <div className="form-group" style={{ marginBottom: '24px' }}>
+                <label className="form-label">배달 요청사항</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                  {requestOptions.map((option) => (
+                    <label
+                      key={option}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        fontSize: '0.9rem',
+                        color: 'var(--text-main)',
+                        cursor: 'pointer',
+                        padding: '12px',
+                        borderRadius: 'var(--radius-sm)',
+                        background: requestType === option ? 'rgba(255, 94, 58, 0.08)' : 'rgba(0, 0, 0, 0.15)',
+                        border: `1px solid ${requestType === option ? 'var(--primary)' : 'var(--panel-border)'}`,
+                        transition: 'var(--transition-smooth)',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="deliveryRequest"
+                        value={option}
+                        checked={requestType === option}
+                        onChange={() => setRequestType(option)}
+                        style={{
+                          accentColor: 'var(--primary)',
+                          cursor: 'pointer',
+                        }}
+                      />
+                      <span>{option}</span>
+                    </label>
+                  ))}
+                </div>
+
+                {requestType === '직접 입력' && (
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="요청사항을 직접 입력해주세요 (예: 조심히 와주세요)"
+                    value={customRequest}
+                    onChange={(e) => setCustomRequest(e.target.value)}
+                    style={{ marginTop: '8px' }}
+                    disabled={loading}
+                    required
+                  />
+                )}
+              </div>
+
               {/* 주소 입력 */}
               <div className="form-group">
                 <label className="form-label">배달 주소</label>
