@@ -9,6 +9,11 @@ interface Restaurant {
   description: string;
   imageUrl: string;
   category: string;
+  rating: number | null;
+  reviewCount: number;
+  deliveryTimeMin: number;
+  deliveryTimeMax: number;
+  isFastDelivery: boolean;
 }
 
 const CATEGORIES = ['전체', '한식', '양식', '아시안'];
@@ -186,19 +191,52 @@ export default function HomePage() {
                     borderRadius: '20px',
                     fontSize: '0.75rem',
                     fontWeight: '700',
-                    color: 'var(--secondary)',
-                    border: '1px solid rgba(0, 210, 255, 0.3)',
+                    color: 'var(--text-main)',
+                    border: '1px solid var(--panel-border)',
                   }}
                 >
                   {restaurant.category}
                 </span>
+
+                {/* 쿠팡이츠 스타일: 한집배달🚀 배지 노출 */}
+                {restaurant.isFastDelivery && (
+                  <span
+                    className="badge-fast"
+                    style={{
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
+                      backdropFilter: 'blur(4px)',
+                      padding: '4px 10px',
+                      borderRadius: '20px',
+                      fontSize: '0.72rem',
+                      fontWeight: '800',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    🚀 한집배달
+                  </span>
+                )}
               </div>
 
               {/* 식당 텍스트 설명 */}
               <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '8px', color: '#fff' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '6px', color: '#fff' }}>
                   {restaurant.name}
                 </h3>
+                
+                {/* 메타 데이터 한 줄 (평점 + 리뷰수 + 배달 시간) */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '12px', fontWeight: '500' }}>
+                  <span style={{ color: 'var(--badge-popular)', fontWeight: '700' }}>
+                    ★ {restaurant.rating ? restaurant.rating.toFixed(1) : '평점 없음'}
+                  </span>
+                  <span>({restaurant.reviewCount})</span>
+                  <span>•</span>
+                  <span>⏱️ {restaurant.deliveryTimeMin}~{restaurant.deliveryTimeMax}분</span>
+                </div>
+
                 <p
                   style={{
                     color: 'var(--text-muted)',

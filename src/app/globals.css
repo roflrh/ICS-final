@@ -5,12 +5,17 @@
   --panel-border: rgba(255, 255, 255, 0.07);
   --panel-hover-border: rgba(255, 255, 255, 0.15);
   
-  --primary: #ff5e3a;
+  /* 시그니처 융합 컬러 */
+  --primary: #ff5e3a;         /* 요기요 레드와 배민 오렌지의 절충 - 주요 CTA */
   --primary-hover: #ff7859;
-  --primary-glow: rgba(255, 94, 58, 0.3);
+  --primary-glow: rgba(255, 94, 58, 0.25);
   
-  --secondary: #00d2ff;
+  --secondary: #00d2ff;       /* 쿠팡이츠의 스카이블루와 청량감 - 정보/배달 */
   --secondary-glow: rgba(0, 210, 255, 0.2);
+  
+  /* 시맨틱 정보 분류 배지 컬러 */
+  --badge-popular: #fbbf24;    /* 인기 메뉴 및 평점용 골드 옐로우 */
+  --badge-discount: #ec4899;   /* 할인/이벤트용 핫핑크 */
   
   --text-main: #f3f4f6;
   --text-muted: #9ca3af;
@@ -55,8 +60,8 @@ body {
 
 .glass-panel:hover {
   border-color: var(--panel-hover-border);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+  transform: translateY(-3px) scale(1.005);
+  box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* 스크롤바 디자인 */
@@ -97,8 +102,8 @@ body {
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(255, 94, 58, 0.45);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(255, 94, 58, 0.45);
   filter: brightness(1.1);
 }
 
@@ -109,8 +114,9 @@ body {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 /* 폼 인풋 필드 */
@@ -179,6 +185,25 @@ body {
   background: rgba(16, 185, 129, 0.15);
   color: var(--success);
   border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+/* 추가 - 기능별 시맨틱 배지 스타일 */
+.badge-popular {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--badge-popular);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+.badge-fast {
+  background: rgba(0, 210, 255, 0.12);
+  color: var(--secondary);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+}
+
+.badge-discount {
+  background: rgba(236, 72, 153, 0.12);
+  color: var(--badge-discount);
+  border: 1px solid rgba(236, 72, 153, 0.25);
 }
 
 /* 헤더 & 네비게이션 */
