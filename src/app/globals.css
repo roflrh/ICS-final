@@ -256,10 +256,36 @@ body {
   color: var(--text-dark);
 }
 
-/* 메인 컨테이너 */
+/* 메인 레이아웃 및 2열 레이아웃 구조 */
 .main-layout {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 24px;
   min-height: calc(100vh - 160px);
+  display: flex;
+  gap: 32px;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 사이드바 스타일 */
+.sidebar-container {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+    padding: 20px 16px;
+  }
+  .sidebar-container {
+    width: 100%;
+  }
 }
