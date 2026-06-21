@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, address, totalPrice, deliveryRequest } = await req.json();
+    const { items, address, totalPrice, riderRequest, shopRequest } = await req.json();
 
     // 유효성 검사
     if (!address) {
@@ -101,7 +101,8 @@ export async function POST(req: NextRequest) {
           address,
           totalPrice,
           status: 'PENDING', // 최초 주문은 'PENDING' (접수대기) 상태
-          deliveryRequest,   // 사용자 배달 요청사항 기입
+          riderRequest,      // 배달기사 요청사항 기입
+          shopRequest,       // 가게 요청사항 기입
         },
       });
 

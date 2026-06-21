@@ -60,7 +60,8 @@ model Order {
   status          String      // "PENDING" | "PREPARING" | "DELIVERING" | "COMPLETED"
   totalPrice      Int
   address         String
-  deliveryRequest String?     // 사용자 배달 요청사항 (선택 입력사항이므로 nullable)
+  riderRequest    String?     // 배달기사 요청사항 (선택 입력사항)
+  shopRequest     String?     // 가게 요청사항 (선택 입력사항)
   createdAt       DateTime    @default(now())
   orderItems      OrderItem[]
 
