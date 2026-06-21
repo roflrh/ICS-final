@@ -1,29 +1,29 @@
-/* 폰트 및 모던 디자인 시스템 정의 */
+/* 폰트 및 모던 디자인 시스템 정의 (미니멀 모던 화이트/소프트 그레이 테마) */
 :root {
-  --bg-gradient: radial-gradient(circle at 50% 50%, #151922 0%, #0b0d12 100%);
-  --panel-bg: rgba(26, 32, 44, 0.55);
-  --panel-border: rgba(255, 255, 255, 0.07);
-  --panel-hover-border: rgba(255, 255, 255, 0.15);
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --panel-bg: #ffffff;
+  --panel-border: rgba(0, 0, 0, 0.03);
+  --panel-hover-border: rgba(0, 0, 0, 0.06);
   
-  /* 시그니처 융합 컬러 */
-  --primary: #ff5e3a;         /* 요기요 레드와 배민 오렌지의 절충 - 주요 CTA */
-  --primary-hover: #ff7859;
-  --primary-glow: rgba(255, 94, 58, 0.25);
+  /* 감각적인 뉴트럴 계열 웜 포인트 컬러 */
+  --primary: #ea580c;         /* 차분하고 세련된 웜 오렌지 테라코타 */
+  --primary-hover: #c2410c;
+  --primary-glow: rgba(234, 88, 12, 0.12);
   
-  --secondary: #00d2ff;       /* 쿠팡이츠의 스카이블루와 청량감 - 정보/배달 */
-  --secondary-glow: rgba(0, 210, 255, 0.2);
+  --secondary: #0f766e;       /* 깊이감 있고 세련된 세이지/틸 그린 */
+  --secondary-glow: rgba(15, 118, 110, 0.08);
   
   /* 시맨틱 정보 분류 배지 컬러 */
-  --badge-popular: #fbbf24;    /* 인기 메뉴 및 평점용 골드 옐로우 */
-  --badge-discount: #ec4899;   /* 할인/이벤트용 핫핑크 */
+  --badge-popular: #d97706;    /* 차분한 골드 브라운 */
+  --badge-discount: #db2777;   /* 세련된 차분한 딥 핑크 */
   
-  --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
-  --text-dark: #1f2937;
+  --text-main: #1e293b;        /* 다크 슬레이트 */
+  --text-muted: #64748b;       /* 슬레이트 그레이 */
+  --text-dark: #0f172a;        /* 차분한 블랙 */
   
-  --success: #10b981;
-  --warning: #f59e0b;
-  --info: #3b82f6;
+  --success: #059669;
+  --warning: #d97706;
+  --info: #2563eb;
   
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -47,21 +47,19 @@ body {
   overflow-x: hidden;
 }
 
-/* 글래스모피즘 공통 카드 스타일 */
+/* 글래스모피즘이 아닌 소프트 섀도우 기반 미니멀 카드 스타일 */
 .glass-panel {
   background: var(--panel-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-md);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: var(--transition-smooth);
 }
 
 .glass-panel:hover {
   border-color: var(--panel-hover-border);
-  transform: translateY(-3px) scale(1.005);
-  box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.07), 0 4px 12px -5px rgba(0, 0, 0, 0.03);
 }
 
 /* 스크롤바 디자인 */
@@ -69,10 +67,10 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -96,26 +94,26 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, #ff3e1a 100%);
+  background: var(--primary);
   color: #fff;
-  box-shadow: 0 4px 15px var(--primary-glow);
+  box-shadow: 0 4px 14px var(--primary-glow);
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(255, 94, 58, 0.45);
-  filter: brightness(1.1);
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.25);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
+  background: #f1f5f9;
   color: var(--text-main);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e2e8f0;
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: #e2e8f0;
+  border-color: #cbd5e1;
   transform: translateY(-1px);
 }
 
@@ -129,7 +127,7 @@ body {
 
 .form-label {
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -138,10 +136,10 @@ body {
 .form-input {
   width: 100%;
   padding: 14px 16px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--panel-border);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: var(--radius-sm);
-  color: var(--text-main);
+  color: var(--text-dark);
   font-size: 0.95rem;
   transition: var(--transition-smooth);
 }
@@ -152,7 +150,7 @@ body {
   box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
-/* 알림 및 뱃지 */
+/* 알림 및 뱃지 (파스텔 & 톤다운 텍스트 스타일) */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -164,46 +162,46 @@ body {
 }
 
 .badge-pending {
-  background: rgba(245, 158, 11, 0.15);
-  color: var(--warning);
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fde68a;
 }
 
 .badge-preparing {
-  background: rgba(59, 130, 246, 0.15);
-  color: var(--info);
-  border: 1px solid rgba(59, 130, 246, 0.25);
+  background: #dbeafe;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
 }
 
 .badge-delivering {
-  background: rgba(0, 210, 255, 0.15);
-  color: var(--secondary);
-  border: 1px solid rgba(0, 210, 255, 0.25);
+  background: #ccfbf1;
+  color: #0f766e;
+  border: 1px solid #99f6e4;
 }
 
 .badge-completed {
-  background: rgba(16, 185, 129, 0.15);
-  color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: #d1fae5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
 }
 
 /* 추가 - 기능별 시맨틱 배지 스타일 */
 .badge-popular {
-  background: rgba(251, 191, 36, 0.15);
-  color: var(--badge-popular);
-  border: 1px solid rgba(251, 191, 36, 0.25);
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fde68a;
 }
 
 .badge-fast {
-  background: rgba(0, 210, 255, 0.12);
-  color: var(--secondary);
-  border: 1px solid rgba(0, 210, 255, 0.25);
+  background: #ccfbf1;
+  color: #0f766e;
+  border: 1px solid #99f6e4;
 }
 
 .badge-discount {
-  background: rgba(236, 72, 153, 0.12);
-  color: var(--badge-discount);
-  border: 1px solid rgba(236, 72, 153, 0.25);
+  background: #fce7f3;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
 }
 
 /* 헤더 & 네비게이션 */
@@ -211,10 +209,10 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(11, 13, 18, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--panel-border);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .header-container {
@@ -229,9 +227,9 @@ body {
 .logo {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-dark);
   text-decoration: none;
-  background: linear-gradient(to right, var(--primary), #ffa37b);
+  background: linear-gradient(to right, var(--primary), #f97316);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: flex;
@@ -248,14 +246,14 @@ body {
 .nav-link {
   color: var(--text-muted);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.95rem;
   transition: var(--transition-smooth);
   position: relative;
 }
 
 .nav-link:hover, .nav-link.active {
-  color: var(--text-main);
+  color: var(--text-dark);
 }
 
 /* 메인 컨테이너 */
