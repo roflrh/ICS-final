@@ -5,6 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useCart } from 'src/context/CartContext';
 import Link from 'next/link';
 
+interface CardInfo {
+  company: string;
+  number: string;
+}
+
 export default function CartPage() {
   const {
     cartItems,
@@ -20,22 +25,100 @@ export default function CartPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const [requestType, setRequestType] = useState('문 앞에 두고 벨 누르기');
-  const [customRequest, setCustomRequest] = useState('');
+  // 1. 주소록 관련 상태 (집 / 회사 / 학교)
+  const [addressTab, setAddressTab] = useState<'home' | 'office' | 'school'>('home');
+  const [addressBook, setAddressBook] = useState({
+    home: '부산 해운대구 우동 마린시티 해원로 35 (자이아파트)',
+    office: '부산 해운대구 센텀동로 9 벡스코 스페이스',
+    school: '부산 해운대구 달맞이길 117 해운대중학교 정문',
+  });
 
-  const requestOptions = [
+  // 2. 요청사항 관련 상태 (배달기사 / 가게 조리)
+  const [riderRequestType, setRiderRequestType] = useState('문 앞에 두고 벨 누르기');
+  const [customRiderRequest, setCustomRiderRequest] = useState('');
+  const [shopRequest, setShopRequest] = useState('');
+
+  const riderOptions = [
     '문 앞에 두고 벨 누르기',
     '벨 누르지 말고 문 앞에 두기',
     '직접 수령',
     '직접 입력',
   ];
 
-  // 최근 저장한 배달 주소가 있다면 자동 기입
+  // 3. 결제 방식 및 카드 등록 상태
+  const [paymentMethod, setPaymentMethod] = useState<'quickpay' | 'card' | 'meet'>('quickpay');
+  const [registeredCard, setRegisteredCard] = useState<CardInfo | null>(null);
+  const [showCardModal, setShowCardModal] = useState(false);
+
+  // 카드 등록 폼 상태
+  const [cardCompany, setCardCompany] = useState('국민카드');
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardPw, setCardPw] = useState('');
+
+  // 로컬 스토리지 데이터 로드
   useEffect(() => {
-    const savedAddress = localStorage.getItem('last_delivery_address');
-    if (savedAddress) setAddress(savedAddress);
+    // 최근 저장한 주소록 불러오기
+    const savedHome = localStorage.getItem('addr_book_home');
+    const savedOffice = localStorage.getItem('addr_book_office');
+    const savedSchool = localStorage.getItem('addr_book_school');
+    setAddressBook({
+      home: savedHome || '부산 해운대구 우동 마린시티 해원로 35 (자이아파트)',
+      office: savedOffice || '부산 해운대구 센텀동로 9 벡스코 스페이스',
+      school: savedSchool || '부산 해운대구 달맞이길 117 해운대중학교 정문',
+    });
+
+    // 기본 최초 주소 설정
+    setAddress(savedHome || '부산 해운대구 우동 마린시티 해원로 35 (자이아파트)');
+
+    // 등록 카드 정보 불러오기
+    const savedCard = localStorage.getItem('registered_card');
+    if (savedCard) {
+      try {
+        setRegisteredCard(JSON.parse(savedCard));
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }, []);
 
+  // 주소록 탭 전환 처리
+  const handleTabChange = (tab: 'home' | 'office' | 'school') => {
+    setAddressTab(tab);
+    setAddress(addressBook[tab]);
+  };
+
+  // 현재 입력된 주소를 선택된 탭 주소로 저장
+  const handleSaveCurrentAddress = () => {
+    if (!address.trim()) {
+      alert('저장할 주소를 입력해주세요.');
+      return;
+    }
+    const updatedBook = { ...addressBook, [addressTab]: address };
+    setAddressBook(updatedBook);
+    localStorage.setItem(`addr_book_${addressTab}`, address);
+    alert(`⭐ 입력하신 주소가 주소록 [${addressTab === 'home' ? '집' : addressTab === 'office' ? '회사' : '학교'}]에 저장되었습니다.`);
+  };
+
+  // 간편 카드 등록 실행
+  const handleRegisterCard = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (cardNumber.length < 16) {
+      alert('올바른 16자리 카드 번호를 입력해주세요.');
+      return;
+    }
+    const lastFour = cardNumber.slice(-4);
+    const cardInfo: CardInfo = {
+      company: cardCompany,
+      number: `****-****-****-${lastFour}`,
+    };
+    setRegisteredCard(cardInfo);
+    localStorage.setItem('registered_card', JSON.stringify(cardInfo));
+    setShowCardModal(false);
+    alert('💳 간편 결제 카드가 성공적으로 등록되었습니다.');
+  };
+
+  // 주문 전송 핸들러
   const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -45,11 +128,15 @@ export default function CartPage() {
       return;
     }
 
-    // 1. 로그인 여부 확인
+    if (paymentMethod === 'quickpay' && !registeredCard) {
+      setError('바이브페이 빠른 결제를 이용하시려면 먼저 카드를 등록해주세요.');
+      return;
+    }
+
+    // 1. 로그인 세션 확인
     try {
       const checkRes = await fetch('/api/auth/me');
       if (!checkRes.ok) {
-        // 비로그인 시 로그인 페이지로 이동시키되 결제 진행 중이었으므로 redirect 쿼리에 /cart 기입
         alert('주문을 진행하려면 로그인이 필요합니다.');
         router.push('/login?redirect=/cart');
         return;
@@ -61,9 +148,10 @@ export default function CartPage() {
 
     setLoading(true);
 
+    const finalRiderRequest = riderRequestType === '직접 입력' ? customRiderRequest : riderRequestType;
+
     try {
-      // 2. 주문 생성 API 전송
-      const finalRequest = requestType === '직접 입력' ? customRequest : requestType;
+      // 2. 주문 생성 API 호출
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,7 +159,8 @@ export default function CartPage() {
           items: cartItems,
           address,
           totalPrice: cartTotalPrice,
-          deliveryRequest: finalRequest,
+          riderRequest: finalRiderRequest,
+          shopRequest: shopRequest || '없음',
         }),
       });
 
@@ -81,10 +170,9 @@ export default function CartPage() {
         throw new Error(data.error || '주문 생성에 실패했습니다.');
       }
 
-      // 주소 로컬 스토리지에 마지막 배송지로 보관
+      // 주소 자동보관
       localStorage.setItem('last_delivery_address', address);
 
-      // 3. 주문 성공 시 장바구니 비우기 및 리다이렉트
       clearCart();
       alert('주문이 정상적으로 완료되었습니다! 주문 내역 화면으로 이동합니다.');
       router.push('/orders');
@@ -116,11 +204,11 @@ export default function CartPage() {
   }
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.8rem', fontWeight: '900', marginBottom: '24px', color: 'var(--text-dark)' }}>장바구니</h1>
+    <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+      <h1 style={{ fontSize: '1.8rem', fontWeight: '900', marginBottom: '24px', color: 'var(--text-dark)' }}>주문하기</h1>
 
-      <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
-        {/* 장바구니 상품 목록 영역 */}
+      <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        {/* 왼쪽: 장바구니 아이템 요약 목록 */}
         <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div
             className="glass-panel"
@@ -149,7 +237,6 @@ export default function CartPage() {
                 flexWrap: 'wrap',
               }}
             >
-              {/* 이미지 및 제목 */}
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                 <img
                   src={item.imageUrl}
@@ -170,7 +257,6 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* 수량 변경 및 삭제 */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <div
                   style={{
@@ -217,7 +303,6 @@ export default function CartPage() {
             </div>
           ))}
 
-          {/* 전체 비우기 버튼 */}
           <button
             onClick={() => {
               if (confirm('장바구니를 모두 비우시겠습니까?')) clearCart();
@@ -229,9 +314,9 @@ export default function CartPage() {
           </button>
         </div>
 
-        {/* 결제 정보 요약 및 배송지 입력 영역 */}
-        <div style={{ flex: '1 1 300px' }}>
-          <div className="glass-panel" style={{ padding: '28px', borderRadius: 'var(--radius-md)', position: 'sticky', top: '100px' }}>
+        {/* 오른쪽: 배송 정보 및 요청사항, 결제 수단 */}
+        <div style={{ flex: '1 1 380px' }}>
+          <div className="glass-panel" style={{ padding: '28px', borderRadius: 'var(--radius-md)' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '20px', color: 'var(--text-dark)' }}>
               결제 및 배송지 정보
             </h2>
@@ -240,8 +325,8 @@ export default function CartPage() {
               <div
                 style={{
                   padding: '10px 14px',
-                  background: 'rgba(239, 68, 68, 0.12)',
-                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                  background: 'rgba(239, 68, 68, 0.08)',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
                   borderRadius: 'var(--radius-sm)',
                   color: '#ef4444',
                   fontSize: '0.85rem',
@@ -253,50 +338,111 @@ export default function CartPage() {
             )}
 
             <form onSubmit={handleOrderSubmit}>
-              {/* 배달 요청사항 */}
+              
+              {/* 1. 주소록 및 주소 입력 */}
               <div className="form-group" style={{ marginBottom: '24px' }}>
-                <label className="form-label">배달 요청사항</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
-                  {requestOptions.map((option) => (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <label className="form-label">배달 주소 (주소록)</label>
+                  
+                  {/* 주소록 탭 버튼 */}
+                  <div style={{ display: 'flex', gap: '4px', background: '#f1f5f9', padding: '3px', borderRadius: '6px' }}>
+                    {(['home', 'office', 'school'] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        type="button"
+                        onClick={() => handleTabChange(tab)}
+                        style={{
+                          border: 'none',
+                          padding: '4px 8px',
+                          fontSize: '0.75rem',
+                          fontWeight: '700',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          background: addressTab === tab ? 'var(--primary)' : 'transparent',
+                          color: addressTab === tab ? '#fff' : 'var(--text-muted)',
+                        }}
+                      >
+                        {tab === 'home' ? '🏠 집' : tab === 'office' ? '🏢 회사' : '🏫 학교'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="배달받으실 주소를 입력해주세요"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    disabled={loading}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSaveCurrentAddress}
+                    className="btn btn-secondary"
+                    style={{ padding: '0 12px', fontSize: '0.78rem', whiteSpace: 'nowrap', flexShrink: 0 }}
+                  >
+                    ⭐ 주소저장
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. 가게 요청사항 (음식 조리 관련) */}
+              <div className="form-group" style={{ marginBottom: '20px' }}>
+                <label className="form-label">가게 요청사항 (음식 조리)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="예: 덜 맵게 해주세요, 단무지 빼주세요"
+                  value={shopRequest}
+                  onChange={(e) => setShopRequest(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+
+              {/* 3. 배달기사 요청사항 (수령 방법 관련) */}
+              <div className="form-group" style={{ marginBottom: '24px' }}>
+                <label className="form-label">배달기사 요청사항</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+                  {riderOptions.map((option) => (
                     <label
                       key={option}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: '10px',
-                        fontSize: '0.9rem',
+                        fontSize: '0.88rem',
                         color: 'var(--text-main)',
                         cursor: 'pointer',
-                        padding: '12px',
+                        padding: '10px 12px',
                         borderRadius: 'var(--radius-sm)',
-                        background: requestType === option ? 'rgba(234, 88, 12, 0.08)' : '#f8fafc',
-                        border: `1px solid ${requestType === option ? 'var(--primary)' : '#e2e8f0'}`,
+                        background: riderRequestType === option ? 'rgba(234, 88, 12, 0.06)' : '#f8fafc',
+                        border: `1px solid ${riderRequestType === option ? 'var(--primary)' : '#e2e8f0'}`,
                         transition: 'var(--transition-smooth)',
                       }}
                     >
                       <input
                         type="radio"
-                        name="deliveryRequest"
+                        name="riderRequest"
                         value={option}
-                        checked={requestType === option}
-                        onChange={() => setRequestType(option)}
-                        style={{
-                          accentColor: 'var(--primary)',
-                          cursor: 'pointer',
-                        }}
+                        checked={riderRequestType === option}
+                        onChange={() => setRiderRequestType(option)}
+                        style={{ accentColor: 'var(--primary)' }}
                       />
                       <span>{option}</span>
                     </label>
                   ))}
                 </div>
 
-                {requestType === '직접 입력' && (
+                {riderRequestType === '직접 입력' && (
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="요청사항을 직접 입력해주세요 (예: 조심히 와주세요)"
-                    value={customRequest}
-                    onChange={(e) => setCustomRequest(e.target.value)}
+                    placeholder="배달 기사님께 전할 요청사항을 입력해주세요"
+                    value={customRiderRequest}
+                    onChange={(e) => setCustomRiderRequest(e.target.value)}
                     style={{ marginTop: '8px' }}
                     disabled={loading}
                     required
@@ -304,21 +450,80 @@ export default function CartPage() {
                 )}
               </div>
 
-              {/* 주소 입력 */}
-              <div className="form-group">
-                <label className="form-label">배달 주소</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="예: 서울시 마포구 백범로 35 (신수동)"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  disabled={loading}
-                  required
-                />
+              {/* 4. 결제 수단 선택 및 간편 결제 */}
+              <div className="form-group" style={{ marginBottom: '24px', borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
+                <label className="form-label">결제 수단</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginTop: '4px' }}>
+                  {(['quickpay', 'card', 'meet'] as const).map((method) => (
+                    <button
+                      key={method}
+                      type="button"
+                      onClick={() => setPaymentMethod(method)}
+                      style={{
+                        border: 'none',
+                        padding: '12px 6px',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontSize: '0.82rem',
+                        fontWeight: '700',
+                        textAlign: 'center',
+                        background: paymentMethod === method ? 'var(--primary)' : '#f1f5f9',
+                        color: paymentMethod === method ? '#fff' : 'var(--text-muted)',
+                        boxShadow: paymentMethod === method ? '0 4px 10px var(--primary-glow)' : 'none',
+                        transition: 'var(--transition-smooth)',
+                      }}
+                    >
+                      {method === 'quickpay' ? '⚡ 바이브페이' : method === 'card' ? '💳 신용카드' : '🤝 만나서결제'}
+                    </button>
+                  ))}
+                </div>
+
+                {/* 바이브페이 선택 시 간편 카드 상태 위젯 */}
+                {paymentMethod === 'quickpay' && (
+                  <div style={{ marginTop: '12px', background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px dashed #cbd5e1', textAlign: 'center' }}>
+                    {registeredCard ? (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ textAlign: 'left' }}>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>등록된 카드</span>
+                          <strong style={{ color: 'var(--text-dark)', fontSize: '0.92rem' }}>
+                            💳 {registeredCard.company} ({registeredCard.number})
+                          </strong>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowCardModal(true)}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--secondary)',
+                            fontSize: '0.8rem',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          변경
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
+                          등록된 결제용 카드가 없습니다.
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setShowCardModal(true)}
+                          className="btn btn-primary"
+                          style={{ padding: '8px 16px', fontSize: '0.82rem', borderRadius: '6px' }}
+                        >
+                          💳 간편 결제 카드 등록하기
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {/* 금액 합계 요약 */}
+              {/* 금액 요약 */}
               <div style={{ margin: '24px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
                   <span>주문금액</span>
@@ -326,7 +531,7 @@ export default function CartPage() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
                   <span>배달팁</span>
-                  <span style={{ color: 'var(--success)' }}>0원 (무료 이벤트!)</span>
+                  <span style={{ color: 'var(--success)' }}>0원 (무료 배달 이벤트!)</span>
                 </div>
                 <div
                   style={{
@@ -340,7 +545,7 @@ export default function CartPage() {
                   }}
                 >
                   <span>총 결제금액</span>
-                  <span style={{ color: 'var(--secondary)' }}>{cartTotalPrice.toLocaleString('ko-KR')}원</span>
+                  <span style={{ color: 'var(--primary)' }}>{cartTotalPrice.toLocaleString('ko-KR')}원</span>
                 </div>
               </div>
 
@@ -350,12 +555,163 @@ export default function CartPage() {
                 style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
                 disabled={loading}
               >
-                {loading ? '주문 생성 중...' : '결제 및 주문하기'}
+                {loading ? '주문 처리 중...' : paymentMethod === 'quickpay' ? '⚡ 원클릭 결제 및 주문하기' : '결제 및 주문하기'}
               </button>
             </form>
           </div>
         </div>
       </div>
+
+      {/* 5. 간편 카드 등록 모달 팝업 */}
+      {showCardModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.4)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 999,
+          }}
+        >
+          <div
+            className="glass-panel"
+            style={{
+              width: '400px',
+              padding: '28px',
+              borderRadius: '20px',
+              position: 'relative',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            <button
+              onClick={() => setShowCardModal(false)}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'transparent',
+                border: 'none',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                color: 'var(--text-muted)',
+              }}
+            >
+              ✕
+            </button>
+
+            <h3 style={{ fontSize: '1.15rem', fontWeight: '800', marginBottom: '20px', color: 'var(--text-dark)' }}>
+              💳 간편 카드 등록 (바이브페이)
+            </h3>
+
+            {/* 카드 실물 모형 그래픽 */}
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                color: '#fff',
+                padding: '20px',
+                borderRadius: '14px',
+                marginBottom: '20px',
+                boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '160px',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>VibePay Quick Card</span>
+                <span style={{ fontWeight: '800', fontStyle: 'italic', fontSize: '0.95rem' }}>{cardCompany}</span>
+              </div>
+              <div style={{ fontSize: '1.1rem', letterSpacing: '0.15em', fontWeight: '600', fontFamily: 'monospace', margin: '20px 0 10px 0' }}>
+                {cardNumber ? cardNumber.replace(/(.{4})/g, '$1 ').trim() : '•••• •••• •••• ••••'}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', opacity: 0.8 }}>
+                <span>HAEUNDAE VIP</span>
+                <span>{cardExpiry || 'MM/YY'}</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleRegisterCard} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">카드사</label>
+                <select
+                  value={cardCompany}
+                  onChange={(e) => setCardCompany(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0',
+                    color: 'var(--text-dark)',
+                    background: '#fff',
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  <option value="국민카드">국민카드</option>
+                  <option value="신한카드">신한카드</option>
+                  <option value="현대카드">현대카드</option>
+                  <option value="삼성카드">삼성카드</option>
+                  <option value="농협카드">농협카드</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">카드번호 (16자리)</label>
+                <input
+                  type="text"
+                  maxLength={16}
+                  className="form-input"
+                  placeholder="예: 9410123456789012"
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value.replace(/[^0-9]/g, ''))}
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">유효기간 (MM/YY)</label>
+                  <input
+                    type="text"
+                    maxLength={5}
+                    className="form-input"
+                    placeholder="MM/YY"
+                    value={cardExpiry}
+                    onChange={(e) => setCardExpiry(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">비밀번호 앞 2자리</label>
+                  <input
+                    type="password"
+                    maxLength={2}
+                    className="form-input"
+                    placeholder="••"
+                    value={cardPw}
+                    onChange={(e) => setCardPw(e.target.value.replace(/[^0-9]/g, ''))}
+                    required
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ width: '100%', marginTop: '10px', padding: '12px' }}
+              >
+                카드 등록 및 저장하기
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
