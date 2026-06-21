@@ -17,12 +17,12 @@ async function main() {
   await prisma.restaurant.deleteMany({});
   await prisma.user.deleteMany({});
 
-  console.log('Seeding restaurants and menus...');
+  console.log('Seeding Haeundae local restaurants and menus...');
 
-  // 1. 마포 삼겹살 본점 (한식, 한집배달 제공)
+  // 1. 해운대 삼겹살 본점 (한식, 한집배달 제공)
   await prisma.restaurant.create({
     data: {
-      name: '마포 삼겹살 본점',
+      name: '해운대 삼겹살 본점',
       description: '숯불향 가득한 초벌 생삼겹살 전문점입니다.',
       category: '한식',
       imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=60',
@@ -57,10 +57,10 @@ async function main() {
     },
   });
 
-  // 2. 경리단길 파스타 빌라 (양식)
+  // 2. 달맞이길 파스타 빌라 (양식)
   await prisma.restaurant.create({
     data: {
-      name: '경리단길 파스타 빌라',
+      name: '달맞이길 파스타 빌라',
       description: '이탈리아 정통 레시피로 요리하는 아늑한 분위기의 가정식 파스타 전문점.',
       category: '양식',
       imageUrl: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&auto=format&fit=crop&q=60',
@@ -95,10 +95,10 @@ async function main() {
     },
   });
 
-  // 3. 동교동 타이키친 (아시안)
+  // 3. 센텀시티 타이키친 (아시안)
   await prisma.restaurant.create({
     data: {
-      name: '동교동 타이키친',
+      name: '센텀시티 타이키친',
       description: '태국 방콕 현지 길거리 감성을 가득 담은 로컬 푸드 레스토랑.',
       category: '아시안',
       imageUrl: 'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600&auto=format&fit=crop&q=60',
@@ -133,13 +133,14 @@ async function main() {
     },
   });
 
-  // 4. 서교동 돈카츠 하우스 (양식, 한집배달 제공)
+  // 4. 장산역 돈카츠 하우스 (양식, 한집배달 제공)
+  // 오류가 났던 튀김 이미지 주소를 검증된 Unsplash 리소스로 대체
   await prisma.restaurant.create({
     data: {
-      name: '서교동 돈카츠 하우스',
+      name: '장산역 돈카츠 하우스',
       description: '제주산 흑돼지를 엄선하여 24시간 숙성 후 튀겨낸 프리미엄 카츠.',
       category: '양식',
-      imageUrl: 'https://images.unsplash.com/photo-1591814468924-caf7f585327f?w=600&auto=format&fit=crop&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=600&auto=format&fit=crop&q=60',
       rating: 4.9,
       reviewCount: 210,
       deliveryTimeMin: 20,
@@ -151,7 +152,7 @@ async function main() {
             name: '수제 등심돈카츠',
             description: '두툼한 등심의 육즙을 그대로 살려 튀겨낸 시그니처 카츠.',
             price: 12000,
-            imageUrl: 'https://images.unsplash.com/photo-1591814468924-caf7f585327f?w=600&auto=format&fit=crop&q=60',
+            imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=600&auto=format&fit=crop&q=60',
             isPopular: true,
           },
           {
@@ -171,10 +172,10 @@ async function main() {
     },
   });
 
-  // 5. 연남동 쌀국수 공방 (아시안, 한집배달 제공)
+  // 5. 해리단길 쌀국수 공방 (아시안, 한집배달 제공)
   await prisma.restaurant.create({
     data: {
-      name: '연남동 쌀국수 공방',
+      name: '해리단길 쌀국수 공방',
       description: '매일 아침 끓여내는 깊고 담백한 육수의 하노이식 쌀국수 공방.',
       category: '아시안',
       imageUrl: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&auto=format&fit=crop&q=60',
@@ -209,10 +210,10 @@ async function main() {
     },
   });
 
-  // 6. 이태원 수제버거 조인트 (양식, 한집배달 미제공)
+  // 6. 송정해변 수제버거 조인트 (양식, 한집배달 미제공)
   await prisma.restaurant.create({
     data: {
-      name: '이태원 수제버거 조인트',
+      name: '송정해변 수제버거 조인트',
       description: '100% 프라임 소고기 패티와 매일 구워내는 고소한 번의 정통 아메리칸 수제버거.',
       category: '양식',
       imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=60',
@@ -247,10 +248,10 @@ async function main() {
     },
   });
 
-  // 7. 한남동 딤섬 스튜디오 (아시안, 한집배달 제공)
+  // 7. 마린시티 딤섬 스튜디오 (아시안, 한집배달 제공)
   await prisma.restaurant.create({
     data: {
-      name: '한남동 딤섬 스튜디오',
+      name: '마린시티 딤섬 스튜디오',
       description: '홍콩 현지 셰프가 선사하는 다채로운 수제 딤섬과 정통 중화요리.',
       category: '아시안',
       imageUrl: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&auto=format&fit=crop&q=60',
@@ -285,10 +286,10 @@ async function main() {
     },
   });
 
-  // 8. 망원 시장 닭강정 (한식, 한집배달 미제공)
+  // 8. 해운대 전통시장 닭강정 (한식, 한집배달 미제공)
   await prisma.restaurant.create({
     data: {
-      name: '망원 시장 닭강정',
+      name: '해운대 전통시장 닭강정',
       description: '3대째 내려오는 특제 조청 소스로 버무려 식어도 바삭하고 맛있는 닭강정 명가.',
       category: '한식',
       imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=60',
@@ -323,10 +324,10 @@ async function main() {
     },
   });
 
-  // 9. 성수동 화덕피자 팩토리 (양식, 한집배달 제공)
+  // 9. 미포항 화덕피자 팩토리 (양식, 한집배달 제공)
   await prisma.restaurant.create({
     data: {
-      name: '성수동 화덕피자 팩토리',
+      name: '미포항 화덕피자 팩토리',
       description: '참나무 장작 화덕에서 400도 고온으로 빠르게 구워내 도우가 쫄깃한 나폴리 피자.',
       category: '양식',
       imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=60',
@@ -361,10 +362,10 @@ async function main() {
     },
   });
 
-  // 10. 홍대입구 마라탕 전문점 (아시안, 한집배달 제공)
+  // 10. 벡스코 마라탕 전문점 (아시안, 한집배달 제공)
   await prisma.restaurant.create({
     data: {
-      name: '홍대입구 마라탕 전문점',
+      name: '벡스코 마라탕 전문점',
       description: '사골 육수의 깊고 구수한 맛에 매콤한 마라유의 짜릿한 매력을 담은 정통 마라탕.',
       category: '아시안',
       imageUrl: 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=600&auto=format&fit=crop&q=60',
@@ -399,13 +400,14 @@ async function main() {
     },
   });
 
-  // 11. 신촌 소곱창 전골집 (한식, 한집배달 미제공)
+  // 11. 재송동 소곱창 전골집 (한식, 한집배달 미제공)
+  // 오류가 났던 전골 이미지 주소를 검증된 사골찌개용 Unsplash 이미지로 대체
   await prisma.restaurant.create({
     data: {
-      name: '신촌 소곱창 전골집',
+      name: '재송동 소곱창 전골집',
       description: '깨끗하게 손질된 소곱창과 대창을 비법 다대기와 함께 졸여가며 먹는 얼큰 전골.',
       category: '한식',
-      imageUrl: 'https://images.unsplash.com/photo-1547928500-304e22943247?w=600&auto=format&fit=crop&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=60',
       rating: 4.7,
       reviewCount: 195,
       deliveryTimeMin: 25,
@@ -417,30 +419,30 @@ async function main() {
             name: '얼큰 소곱창전골 (2인분)',
             description: '곱이 꽉 찬 곱창과 신선한 야채, 우동사리가 기본 제공되는 푸짐한 전골.',
             price: 29000,
-            imageUrl: 'https://images.unsplash.com/photo-1547928500-304e22943247?w=600&auto=format&fit=crop&q=60',
+            imageUrl: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=60',
             isPopular: true,
           },
           {
             name: '매콤 야채곱창볶음',
             description: '쫄깃한 곱창을 당면, 깻잎과 함께 철판에 매콤하게 볶아낸 요리.',
             price: 14000,
-            imageUrl: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=60',
+            imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=60',
           },
           {
             name: '치즈 날치알볶음밥',
             description: '고소한 김가루와 톡톡 터지는 날치알, 치즈 사리를 더해 볶아먹는 볶음밥.',
             price: 4000,
-            imageUrl: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=60',
+            imageUrl: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&auto=format&fit=crop&q=60',
           },
         ],
       },
     },
   });
 
-  // 12. 강남역 라멘 베이스 (아시안, 한집배달 제공)
+  // 12. 해운대역 라멘 베이스 (아시안, 한집배달 제공)
   await prisma.restaurant.create({
     data: {
-      name: '강남역 라멘 베이스',
+      name: '해운대역 라멘 베이스',
       description: '돼지 사골을 24시간 가마솥에서 고아내어 국물이 걸쭉하고 깊은 하카타식 라멘.',
       category: '아시안',
       imageUrl: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=60',
@@ -475,10 +477,10 @@ async function main() {
     },
   });
 
-  // 13. 대학로 김치찜 명가 (한식, 한집배달 제공)
+  // 13. 우동 김치찜 명가 (한식, 한집배달 제공)
   await prisma.restaurant.create({
     data: {
-      name: '대학로 김치찜 명가',
+      name: '우동 김치찜 명가',
       description: '푹 익은 전라도식 묵은지와 국내산 돼지갈비를 뭉근하게 끓여낸 정통 한식 찜 요리.',
       category: '한식',
       imageUrl: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=600&auto=format&fit=crop&q=60',
@@ -513,7 +515,7 @@ async function main() {
     },
   });
 
-  console.log('Database seeding completed successfully!');
+  console.log('Haeundae database seeding completed successfully!');
 }
 
 main()
