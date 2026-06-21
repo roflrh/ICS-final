@@ -10,6 +10,7 @@ interface Menu {
   description: string;
   price: number;
   imageUrl: string;
+  isPopular: boolean;
 }
 
 interface Restaurant {
@@ -18,6 +19,11 @@ interface Restaurant {
   description: string;
   imageUrl: string;
   category: string;
+  rating: number | null;
+  reviewCount: number;
+  deliveryTimeMin: number;
+  deliveryTimeMax: number;
+  isFastDelivery: boolean;
   menus: Menu[];
 }
 
@@ -115,33 +121,79 @@ export default function RestaurantDetailPage() {
           borderRadius: 'var(--radius-lg)',
           marginBottom: '40px',
           alignItems: 'center',
+          justifyContent: 'space-between',
           flexWrap: 'wrap',
         }}
       >
-        <img
-          src={restaurant.imageUrl}
-          alt={restaurant.name}
+        <div style={{ display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap', flex: '1 1 auto' }}>
+          <img
+            src={restaurant.imageUrl}
+            alt={restaurant.name}
+            style={{
+              width: '240px',
+              height: '160px',
+              objectFit: 'cover',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--panel-border)',
+            }}
+          />
+          <div style={{ flex: '1 1 300px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
+              <span
+                className="badge badge-preparing"
+                style={{ fontSize: '0.8rem', background: 'rgba(0, 210, 255, 0.1)' }}
+              >
+                {restaurant.category}
+              </span>
+              {restaurant.isFastDelivery && (
+                <span
+                  className="badge badge-fast"
+                  style={{ fontSize: '0.8rem' }}
+                >
+                  🚀 한집배달
+                </span>
+              )}
+            </div>
+            <h1 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '8px', color: '#fff' }}>
+              {restaurant.name}
+            </h1>
+            
+            {/* 메타 데이터 한 줄 (평점 + 리뷰수 + 배달 시간) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '12px', fontWeight: '500' }}>
+              <span style={{ color: 'var(--badge-popular)', fontWeight: '700' }}>
+                ★ {restaurant.rating ? restaurant.rating.toFixed(1) : '평점 없음'}
+              </span>
+              <span>({restaurant.reviewCount})</span>
+              <span>•</span>
+              <span>⏱️ {restaurant.deliveryTimeMin}~{restaurant.deliveryTimeMax}분</span>
+            </div>
+
+            <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: '1.6' }}>
+              {restaurant.description}
+            </p>
+          </div>
+        </div>
+
+        {/* 첫 주문 쿠폰 안내 영역 */}
+        <div
+          className="badge-discount"
           style={{
-            width: '240px',
-            height: '160px',
-            objectFit: 'cover',
+            padding: '16px 24px',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--panel-border)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '1px dashed var(--badge-discount)',
+            minWidth: '220px',
+            flex: '0 0 auto',
+            boxShadow: '0 4px 15px rgba(236, 72, 153, 0.1)',
           }}
-        />
-        <div style={{ flex: '1 1 300px' }}>
-          <span
-            className="badge badge-preparing"
-            style={{ marginBottom: '12px', fontSize: '0.8rem', background: 'rgba(0, 210, 255, 0.1)' }}
-          >
-            {restaurant.category}
+        >
+          <span style={{ fontSize: '1.3rem', marginBottom: '4px' }}>🏷️ 쿠폰 안내</span>
+          <span style={{ fontSize: '0.9rem', fontWeight: '800', textAlign: 'center' }}>
+            첫 주문 3,000원 즉시 할인 중
           </span>
-          <h1 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '8px', color: '#fff' }}>
-            {restaurant.name}
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: '1.6' }}>
-            {restaurant.description}
-          </p>
         </div>
       </div>
 
@@ -177,7 +229,12 @@ export default function RestaurantDetailPage() {
                 }}
               />
               <div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: '#fff', marginBottom: '4px' }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: '#fff', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  {menu.isPopular && (
+                    <span className="badge badge-popular" style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
+                      👑 인기
+                    </span>
+                  )}
                   {menu.name}
                 </h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '8px', lineHeight: '1.4' }}>
