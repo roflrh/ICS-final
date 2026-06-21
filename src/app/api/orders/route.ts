@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { db } from 'src/lib/db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-for-delivery-app-12345';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // JWT 검증 및 유저 정보 추출 헬퍼 함수
 async function getAuthenticatedUser(req: NextRequest) {
+  if (!JWT_SECRET) {
+    console.error('보안 에러: JWT_SECRET 환경변수가 정의되지 않았습니다.');
+    return null;
+  }
   const token = req.cookies.get('token')?.value;
   if (!token) return null;
 

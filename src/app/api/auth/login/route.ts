@@ -3,10 +3,18 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { db } from 'src/lib/db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-for-delivery-app-12345';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function POST(req: NextRequest) {
   try {
+    if (!JWT_SECRET) {
+      console.error('보안 에러: JWT_SECRET 환경변수가 정의되지 않았습니다.');
+      return NextResponse.json(
+        { error: '서버 내부 구성 요건이 충족되지 않았습니다.' },
+        { status: 500 }
+      );
+    }
+
     const { email, password } = await req.json();
 
     // 1. 유효성 검사
