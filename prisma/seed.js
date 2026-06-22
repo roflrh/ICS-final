@@ -31,6 +31,7 @@ async function main() {
       deliveryTimeMin: 25,
       deliveryTimeMax: 35,
       isFastDelivery: true,
+      hasCoupon: true,
       menus: {
         create: [
           {
@@ -107,6 +108,7 @@ async function main() {
       deliveryTimeMin: 20,
       deliveryTimeMax: 30,
       isFastDelivery: true,
+      hasCoupon: true,
       menus: {
         create: [
           {
@@ -146,6 +148,7 @@ async function main() {
       deliveryTimeMin: 20,
       deliveryTimeMax: 30,
       isFastDelivery: true,
+      hasCoupon: true,
       menus: {
         create: [
           {
@@ -260,6 +263,7 @@ async function main() {
       deliveryTimeMin: 30,
       deliveryTimeMax: 40,
       isFastDelivery: true,
+      hasCoupon: true,
       menus: {
         create: [
           {
@@ -336,6 +340,7 @@ async function main() {
       deliveryTimeMin: 30,
       deliveryTimeMax: 45,
       isFastDelivery: true,
+      hasCoupon: true,
       menus: {
         create: [
           {
@@ -413,6 +418,7 @@ async function main() {
       deliveryTimeMin: 25,
       deliveryTimeMax: 40,
       isFastDelivery: false,
+      hasCoupon: true,
       menus: {
         create: [
           {
@@ -489,6 +495,7 @@ async function main() {
       deliveryTimeMin: 25,
       deliveryTimeMax: 35,
       isFastDelivery: true,
+      hasCoupon: true,
       menus: {
         create: [
           {
