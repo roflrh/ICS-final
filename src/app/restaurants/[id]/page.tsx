@@ -24,6 +24,7 @@ interface Restaurant {
   deliveryTimeMin: number;
   deliveryTimeMax: number;
   isFastDelivery: boolean;
+  hasCoupon: boolean; // [NEW] DB 쿠폰 필드 추가
   menus: Menu[];
 }
 
@@ -143,24 +144,6 @@ export default function RestaurantDetailPage() {
     );
 
     if (success) {
-      // 5. 옵션 개수만큼 수량 동기화 처리 (addToCart 내부에서는 기본 1개 세팅되므로 수량이 1보다 크면 업데이트해 줌)
-      if (optionQuantity > 1) {
-        // 내부 Context 수량 갱신을 위해 약간의 delay 후 수량 조절
-        setTimeout(() => {
-          const savedCart = localStorage.getItem('cart');
-          if (savedCart) {
-            try {
-              const parsed = JSON.parse(savedCart);
-              const found = parsed.find((i: any) => i.cartItemId === cartItemId);
-              if (found) {
-                // 이미 담긴 1개에 이어 타겟 수량으로 직접 업데이트
-                const { updateQuantity } = useCart(); // 이펙티브 컨텍스트가 렌더링되므로 아래에서 updateQuantity 획득 가능
-              }
-            } catch (e) {}
-          }
-        }, 100);
-      }
-
       setToastMessage(`🛒 ${selectedMenuForOptions.name}이(가) 장바구니에 담겼습니다.`);
       setSelectedMenuForOptions(null);
     }
@@ -261,53 +244,55 @@ export default function RestaurantDetailPage() {
           </div>
         </div>
 
-        {/* 🏷️ 절취선 입체 쿠폰 티켓 그래픽 개편 */}
-        <div
-          onClick={handleDownloadCoupon}
-          style={{
-            cursor: 'pointer',
-            background: isCouponDownloaded
-              ? 'linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%)'
-              : 'linear-gradient(135deg, #db2777 0%, #be185d 100%)',
-            color: '#fff',
-            borderRadius: '16px',
-            boxShadow: isCouponDownloaded
-              ? '0 4px 10px rgba(0,0,0,0.05)'
-              : '0 10px 20px rgba(219,39,119,0.25)',
-            display: 'flex',
-            width: '240px',
-            height: '84px',
-            position: 'relative',
-            overflow: 'hidden',
-            transition: 'var(--transition-smooth)',
-            border: '1px solid rgba(0,0,0,0.05)',
-            transform: 'perspective(500px) rotateY(-5deg)',
-          }}
-          onMouseOver={(e) => (e.currentTarget.style.transform = 'perspective(500px) rotateY(0deg) scale(1.03)')}
-          onMouseOut={(e) => (e.currentTarget.style.transform = 'perspective(500px) rotateY(-5deg) scale(1.0)')}
-        >
-          {/* 절취선 홈 그래픽 */}
-          <div style={{ position: 'absolute', left: '160px', top: '-10px', width: '20px', height: '20px', borderRadius: '50%', background: 'var(--bg-gradient)', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '160px', bottom: '-10px', width: '20px', height: '20px', borderRadius: '50%', background: 'var(--bg-gradient)', zIndex: 3 }} />
+        {/* 🏷️ 절취선 입체 쿠폰 티켓 그래픽 개편 (식당 쿠폰 보유 조건부 렌더링) */}
+        {restaurant.hasCoupon && (
+          <div
+            onClick={handleDownloadCoupon}
+            style={{
+              cursor: 'pointer',
+              background: isCouponDownloaded
+                ? 'linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%)'
+                : 'linear-gradient(135deg, #db2777 0%, #be185d 100%)',
+              color: '#fff',
+              borderRadius: '16px',
+              boxShadow: isCouponDownloaded
+                ? '0 4px 10px rgba(0,0,0,0.05)'
+                : '0 10px 20px rgba(219,39,119,0.25)',
+              display: 'flex',
+              width: '240px',
+              height: '84px',
+              position: 'relative',
+              overflow: 'hidden',
+              transition: 'var(--transition-smooth)',
+              border: '1px solid rgba(0,0,0,0.05)',
+              transform: 'perspective(500px) rotateY(-5deg)',
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = 'perspective(500px) rotateY(0deg) scale(1.03)')}
+            onMouseOut={(e) => (e.currentTarget.style.transform = 'perspective(500px) rotateY(-5deg) scale(1.0)')}
+          >
+            {/* 절취선 홈 그래픽 */}
+            <div style={{ position: 'absolute', left: '160px', top: '-10px', width: '20px', height: '20px', borderRadius: '50%', background: 'var(--bg-gradient)', zIndex: 3 }} />
+            <div style={{ position: 'absolute', left: '160px', bottom: '-10px', width: '20px', height: '20px', borderRadius: '50%', background: 'var(--bg-gradient)', zIndex: 3 }} />
 
-          {/* 왼쪽: 할인 금액 액수 */}
-          <div style={{ flex: '0 0 170px', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: '20px', zIndex: 2 }}>
-            <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.85, fontWeight: '700' }}>FIRST ORDER</span>
-            <strong style={{ fontSize: '1.4rem', fontWeight: '900', letterSpacing: '-0.03em' }}>3,000원 할인</strong>
+            {/* 왼쪽: 할인 금액 액수 */}
+            <div style={{ flex: '0 0 170px', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: '20px', zIndex: 2 }}>
+              <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.85, fontWeight: '700' }}>FIRST ORDER</span>
+              <strong style={{ fontSize: '1.4rem', fontWeight: '900', letterSpacing: '-0.03em' }}>3,000원 할인</strong>
+            </div>
+
+            {/* 절취선 점선 */}
+            <div style={{ width: '0px', borderLeft: '2px dashed rgba(255,255,255,0.4)', height: '100%', position: 'absolute', left: '170px' }} />
+
+            {/* 오른쪽: 다운로드 아이콘 액션 */}
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2, paddingLeft: '8px' }}>
+              {isCouponDownloaded ? (
+                <span style={{ fontSize: '1.25rem', fontWeight: '900' }}>✓</span>
+              ) : (
+                <span style={{ fontSize: '1.4rem', fontWeight: '700', animation: 'couponBounce 1.5s infinite ease-in-out' }}>📥</span>
+              )}
+            </div>
           </div>
-
-          {/* 절취선 점선 */}
-          <div style={{ width: '0px', borderLeft: '2px dashed rgba(255,255,255,0.4)', height: '100%', position: 'absolute', left: '170px' }} />
-
-          {/* 오른쪽: 다운로드 아이콘 액션 */}
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2, paddingLeft: '8px' }}>
-            {isCouponDownloaded ? (
-              <span style={{ fontSize: '1.25rem', fontWeight: '900' }}>✓</span>
-            ) : (
-              <span style={{ fontSize: '1.4rem', fontWeight: '700', animation: 'couponBounce 1.5s infinite ease-in-out' }}>📥</span>
-            )}
-          </div>
-        </div>
+        )}
       </div>
 
       {/* 메뉴 리스트 타이틀 */}
