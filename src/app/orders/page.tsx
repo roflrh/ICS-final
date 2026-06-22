@@ -35,6 +35,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const router = useRouter();
 
   // 주문 내역 가져오기
@@ -84,6 +85,9 @@ export default function OrdersPage() {
             order.id === orderId ? { ...order, status: nextStatus } : order
           )
         );
+        const statusLabel = STATUS_MAP[nextStatus].label;
+        setToastMessage(`📢 주문 상태가 [${statusLabel}](으)로 업데이트되었습니다!`);
+        setTimeout(() => setToastMessage(null), 3000);
       } else {
         alert('주문 상태 변경에 실패했습니다.');
       }
@@ -359,6 +363,39 @@ export default function OrdersPage() {
             box-shadow: 0 0 4px var(--pulse-color);
             transform: scale(1);
           }
+        }
+      `}</style>
+
+      {/* 실시간 상태 업데이트 토스트 알림 */}
+      {toastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            background: 'var(--text-dark)',
+            color: '#fff',
+            padding: '14px 24px',
+            borderRadius: 'var(--radius-md)',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            fontSize: '0.9rem',
+            fontWeight: '600',
+            animation: 'toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
+        >
+          {toastMessage}
+        </div>
+      )}
+
+      {/* 애니메이션 스타일 정의 */}
+      <style>{`
+        @keyframes toastSlideIn {
+          from { transform: translateY(100px) scale(0.9); opacity: 0; }
+          to { transform: translateY(0) scale(1); opacity: 1; }
         }
       `}</style>
     </div>
