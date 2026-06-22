@@ -39,8 +39,7 @@ function LoginForm() {
         throw new Error(data.error || '로그인에 실패했습니다.');
       }
 
-      router.push(redirect);
-      router.refresh();
+      window.location.href = redirect;
     } catch (err: any) {
       setError(err.message);
     } finally {

@@ -46,8 +46,7 @@ export default function Header() {
       if (res.ok) {
         setUser(null);
         alert('로그아웃 되었습니다.');
-        router.push('/');
-        router.refresh();
+        window.location.href = '/';
       }
     } catch (e) {
       alert('로그아웃 처리 중 에러가 발생했습니다.');
