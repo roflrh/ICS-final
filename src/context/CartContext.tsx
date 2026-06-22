@@ -3,11 +3,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface CartItem {
+  cartItemId: string;       // 고유 ID (menuId + 옵션 이름 조인)
   menuId: string;
   name: string;
-  price: number;
+  price: number;            // 옵션이 추가된 최종 단가
   quantity: number;
   imageUrl: string;
+  selectedOptions?: string[]; // 선택된 옵션 목록 (예: ["치즈 추가 (+1,500원)"])
 }
 
 interface CartContextType {
@@ -15,8 +17,8 @@ interface CartContextType {
   restaurantId: string | null;
   restaurantName: string | null;
   addToCart: (item: Omit<CartItem, 'quantity'>, rId: string, rName: string) => boolean;
-  removeFromCart: (menuId: string) => void;
-  updateQuantity: (menuId: string, quantity: number) => void;
+  removeFromCart: (cartItemId: string) => void;
+  updateQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
   cartTotalPrice: number;
   cartCount: number;
@@ -80,16 +82,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     // 동일 식당이거나 장바구니가 비어있는 경우
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((i) => i.menuId === item.menuId);
+      // 이제 cartItemId 기준으로 동일 상품 검색 (옵션 조합이 동일한지 판단)
+      const existingItem = prevItems.find((i) => i.cartItemId === item.cartItemId);
       let newItems;
 
       if (existingItem) {
-        // 이미 있으면 수량 증가
+        // 이미 완전히 같은 옵션 조합이면 수량만 증가
         newItems = prevItems.map((i) =>
-          i.menuId === item.menuId ? { ...i, quantity: i.quantity + 1 } : i
+          i.cartItemId === item.cartItemId ? { ...i, quantity: i.quantity + 1 } : i
         );
       } else {
-        // 없으면 새로 추가
+        // 다른 옵션 조합이거나 아예 새 상품이면 신규 배치
         newItems = [...prevItems, { ...item, quantity: 1 }];
       }
 
@@ -102,10 +105,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
-  // 장바구니에서 특정 아이템 제거
-  const removeFromCart = (menuId: string) => {
+  // 장바구니에서 특정 아이템 제거 (cartItemId 기준)
+  const removeFromCart = (cartItemId: string) => {
     setCartItems((prevItems) => {
-      const newItems = prevItems.filter((item) => item.menuId !== menuId);
+      const newItems = prevItems.filter((item) => item.cartItemId !== cartItemId);
       
       // 장바구니가 텅 비면 식당 정보도 초기화
       const nextRestId = newItems.length === 0 ? null : restaurantId;
@@ -118,16 +121,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  // 수량 조절
-  const updateQuantity = (menuId: string, quantity: number) => {
+  // 수량 조절 (cartItemId 기준)
+  const updateQuantity = (cartItemId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(menuId);
+      removeFromCart(cartItemId);
       return;
     }
 
     setCartItems((prevItems) => {
       const newItems = prevItems.map((item) =>
-        item.menuId === menuId ? { ...item, quantity } : item
+        item.cartItemId === cartItemId ? { ...item, quantity } : item
       );
       saveToLocalStorage(newItems, restaurantId, restaurantName);
       return newItems;
