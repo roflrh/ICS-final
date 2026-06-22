@@ -10,6 +10,13 @@ interface CardInfo {
   number: string;
 }
 
+interface CreditCardInfo {
+  id: string;
+  alias: string;
+  company: string;
+  number: string;
+}
+
 export default function CartPage() {
   const {
     cartItems,
@@ -47,14 +54,27 @@ export default function CartPage() {
 
   // 3. 결제 방식 및 카드 등록 상태
   const [paymentMethod, setPaymentMethod] = useState<'quickpay' | 'card' | 'meet'>('quickpay');
+  
+  // 바이브페이 전용 등록 카드
   const [registeredCard, setRegisteredCard] = useState<CardInfo | null>(null);
   const [showCardModal, setShowCardModal] = useState(false);
 
-  // 카드 등록 폼 상태
+  // 다중 신용카드 상태
+  const [creditCards, setCreditCards] = useState<CreditCardInfo[]>([]);
+  const [selectedCreditCardId, setSelectedCreditCardId] = useState<string>('');
+  const [showCreditCardModal, setShowCreditCardModal] = useState(false);
+
+  // 바이브페이 카드 등록 폼 상태
   const [cardCompany, setCardCompany] = useState('국민카드');
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardPw, setCardPw] = useState('');
+
+  // 다중 신용카드 등록 폼 상태
+  const [ccAlias, setCcAlias] = useState('');
+  const [ccCompany, setCcCompany] = useState('현대카드');
+  const [ccNumber, setCcNumber] = useState('');
+  const [ccExpiry, setCcExpiry] = useState('');
 
   // 로컬 스토리지 데이터 로드
   useEffect(() => {
@@ -71,11 +91,25 @@ export default function CartPage() {
     // 기본 최초 주소 설정
     setAddress(savedHome || '부산 해운대구 우동 마린시티 해원로 35 (자이아파트)');
 
-    // 등록 카드 정보 불러오기
+    // 등록 바이브페이 카드 정보 불러오기
     const savedCard = localStorage.getItem('registered_card');
     if (savedCard) {
       try {
         setRegisteredCard(JSON.parse(savedCard));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // 등록 신용카드 다중 리스트 불러오기
+    const savedCreditCards = localStorage.getItem('registered_credit_cards');
+    if (savedCreditCards) {
+      try {
+        const parsed = JSON.parse(savedCreditCards);
+        setCreditCards(parsed);
+        if (parsed.length > 0) {
+          setSelectedCreditCardId(parsed[0].id);
+        }
       } catch (e) {
         console.error(e);
       }
@@ -100,7 +134,7 @@ export default function CartPage() {
     alert(`⭐ 입력하신 주소가 주소록 [${addressTab === 'home' ? '집' : addressTab === 'office' ? '회사' : '학교'}]에 저장되었습니다.`);
   };
 
-  // 간편 카드 등록 실행
+  // 바이브페이 카드 등록 실행
   const handleRegisterCard = (e: React.FormEvent) => {
     e.preventDefault();
     if (cardNumber.length < 16) {
@@ -115,7 +149,52 @@ export default function CartPage() {
     setRegisteredCard(cardInfo);
     localStorage.setItem('registered_card', JSON.stringify(cardInfo));
     setShowCardModal(false);
-    alert('💳 간편 결제 카드가 성공적으로 등록되었습니다.');
+    alert('💳 간편 결제용 바이브페이 카드가 성공적으로 등록되었습니다.');
+  };
+
+  // 신용카드 다중 등록 실행
+  const handleRegisterCreditCard = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (ccNumber.length < 16) {
+      alert('올바른 16자리 신용카드 번호를 입력해주세요.');
+      return;
+    }
+    if (!ccAlias.trim()) {
+      alert('카드 별칭(예: 현대 ZERO 카드)을 입력해주세요.');
+      return;
+    }
+
+    const lastFour = ccNumber.slice(-4);
+    const newCard: CreditCardInfo = {
+      id: `cc_${Date.now()}`,
+      alias: ccAlias,
+      company: ccCompany,
+      number: `****-****-****-${lastFour}`,
+    };
+
+    const updatedList = [...creditCards, newCard];
+    setCreditCards(updatedList);
+    localStorage.setItem('registered_credit_cards', JSON.stringify(updatedList));
+    setSelectedCreditCardId(newCard.id);
+    setShowCreditCardModal(false);
+
+    // 폼 클리어
+    setCcAlias('');
+    setCcNumber('');
+    setCcExpiry('');
+    alert(`💳 [${ccAlias}] 신용카드가 자산 목록에 추가되었습니다.`);
+  };
+
+  // 신용카드 삭제 실행
+  const handleDeleteCreditCard = (idToDelete: string) => {
+    if (!confirm('선택한 신용카드를 삭제하시겠습니까?')) return;
+    const updatedList = creditCards.filter((c) => c.id !== idToDelete);
+    setCreditCards(updatedList);
+    localStorage.setItem('registered_credit_cards', JSON.stringify(updatedList));
+    if (selectedCreditCardId === idToDelete) {
+      setSelectedCreditCardId(updatedList.length > 0 ? updatedList[0].id : '');
+    }
+    alert('🗑️ 신용카드가 삭제되었습니다.');
   };
 
   // 주문 전송 핸들러
@@ -130,6 +209,11 @@ export default function CartPage() {
 
     if (paymentMethod === 'quickpay' && !registeredCard) {
       setError('바이브페이 빠른 결제를 이용하시려면 먼저 카드를 등록해주세요.');
+      return;
+    }
+
+    if (paymentMethod === 'card' && creditCards.length === 0) {
+      setError('신용카드 결제를 이용하시려면 먼저 1개 이상의 신용카드를 등록/선택해 주세요.');
       return;
     }
 
@@ -226,7 +310,7 @@ export default function CartPage() {
 
           {cartItems.map((item) => (
             <div
-              key={item.menuId}
+              key={item.cartItemId}
               className="glass-panel"
               style={{
                 display: 'flex',
@@ -251,6 +335,18 @@ export default function CartPage() {
                 />
                 <div>
                   <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--text-dark)' }}>{item.name}</h3>
+                  
+                  {/* 선택된 옵션들 렌더링 추가 */}
+                  {item.selectedOptions && item.selectedOptions.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '4px', marginBottom: '6px' }}>
+                      {item.selectedOptions.map((opt, idx) => (
+                        <span key={idx} style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                          ➕ {opt}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
                   <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
                     {item.price.toLocaleString('ko-KR')}원
                   </span>
@@ -269,7 +365,7 @@ export default function CartPage() {
                   }}
                 >
                   <button
-                    onClick={() => updateQuantity(item.menuId, item.quantity - 1)}
+                    onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
                     className="btn"
                     style={{ padding: '6px 12px', background: 'transparent', borderRadius: '0' }}
                   >
@@ -279,7 +375,7 @@ export default function CartPage() {
                     {item.quantity}
                   </span>
                   <button
-                    onClick={() => updateQuantity(item.menuId, item.quantity + 1)}
+                    onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                     className="btn"
                     style={{ padding: '6px 12px', background: 'transparent', borderRadius: '0' }}
                   >
@@ -288,7 +384,7 @@ export default function CartPage() {
                 </div>
 
                 <button
-                  onClick={() => removeFromCart(item.menuId)}
+                  onClick={() => removeFromCart(item.cartItemId)}
                   className="btn btn-secondary"
                   style={{
                     padding: '8px 12px',
@@ -450,7 +546,7 @@ export default function CartPage() {
                 )}
               </div>
 
-              {/* 4. 결제 수단 선택 및 간편 결제 */}
+              {/* 4. 결제 수단 선택 및 자산 패널 */}
               <div className="form-group" style={{ marginBottom: '24px', borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
                 <label className="form-label">결제 수단</label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginTop: '4px' }}>
@@ -478,7 +574,7 @@ export default function CartPage() {
                   ))}
                 </div>
 
-                {/* 바이브페이 선택 시 간편 카드 상태 위젯 */}
+                {/* A. 바이브페이 선택 시 간편 카드 상태 위젯 */}
                 {paymentMethod === 'quickpay' && (
                   <div style={{ marginTop: '12px', background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px dashed #cbd5e1', textAlign: 'center' }}>
                     {registeredCard ? (
@@ -516,6 +612,84 @@ export default function CartPage() {
                           style={{ padding: '8px 16px', fontSize: '0.82rem', borderRadius: '6px' }}
                         >
                           💳 간편 결제 카드 등록하기
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* B. 일반 신용카드 선택 시 다중 신용카드 선택 및 관리 패널 구현 */}
+                {paymentMethod === 'card' && (
+                  <div style={{ marginTop: '12px', background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+                    {creditCards.length > 0 ? (
+                      <div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>결제할 신용카드 선택</span>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
+                          <select
+                            value={selectedCreditCardId}
+                            onChange={(e) => setSelectedCreditCardId(e.target.value)}
+                            style={{
+                              flex: 1,
+                              padding: '10px',
+                              borderRadius: '8px',
+                              border: '1px solid #cbd5e1',
+                              color: 'var(--text-dark)',
+                              background: '#fff',
+                              fontSize: '0.88rem',
+                              fontWeight: '700'
+                            }}
+                          >
+                            {creditCards.map((cc) => (
+                              <option key={cc.id} value={cc.id}>
+                                {cc.alias} - {cc.company} ({cc.number})
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteCreditCard(selectedCreditCardId)}
+                            style={{
+                              background: 'transparent',
+                              border: 'none',
+                              color: '#ef4444',
+                              fontSize: '0.8rem',
+                              fontWeight: '700',
+                              cursor: 'pointer',
+                              padding: '8px'
+                            }}
+                          >
+                            삭제
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowCreditCardModal(true)}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--primary)',
+                            fontSize: '0.82rem',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                            display: 'block',
+                            margin: '0 auto'
+                          }}
+                        >
+                          ➕ 새 신용카드 등록하기
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ textAlign: 'center' }}>
+                        <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
+                          등록된 신용카드가 존재하지 않습니다.
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setShowCreditCardModal(true)}
+                          className="btn btn-secondary"
+                          style={{ padding: '8px 16px', fontSize: '0.82rem', borderRadius: '6px' }}
+                        >
+                          ➕ 새 카드 등록 및 자산추가
                         </button>
                       </div>
                     )}
@@ -562,7 +736,7 @@ export default function CartPage() {
         </div>
       </div>
 
-      {/* 5. 간편 카드 등록 모달 팝업 */}
+      {/* 5. 바이브페이 카드 등록 모달 */}
       {showCardModal && (
         <div
           style={{
@@ -626,7 +800,6 @@ export default function CartPage() {
                 overflow: 'hidden',
               }}
             >
-              {/* 반짝임 하이라이트 효과용 가상 오버레이 */}
               <div style={{
                 position: 'absolute',
                 top: '-50%',
@@ -642,7 +815,6 @@ export default function CartPage() {
                 <span style={{ fontWeight: '900', fontStyle: 'italic', fontSize: '1rem', letterSpacing: '-0.02em' }}>{cardCompany}</span>
               </div>
 
-              {/* 금빛 IC 칩 모형 */}
               <div
                 style={{
                   width: '38px',
@@ -656,7 +828,6 @@ export default function CartPage() {
                   border: '1px solid rgba(0,0,0,0.08)'
                 }}
               >
-                {/* 칩 내부 격자 디자인 */}
                 <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'rgba(0,0,0,0.15)' }} />
                 <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'rgba(0,0,0,0.15)' }} />
               </div>
@@ -740,6 +911,172 @@ export default function CartPage() {
                 style={{ width: '100%', marginTop: '10px', padding: '12px' }}
               >
                 카드 등록 및 저장하기
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 6. 다중 신용카드 등록 모달 */}
+      {showCreditCardModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.4)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 999,
+          }}
+        >
+          <div
+            className="glass-panel"
+            style={{
+              width: '400px',
+              padding: '28px',
+              borderRadius: '20px',
+              position: 'relative',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            <button
+              onClick={() => setShowCreditCardModal(false)}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'transparent',
+                border: 'none',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                color: 'var(--text-muted)',
+              }}
+            >
+              ✕
+            </button>
+
+            <h3 style={{ fontSize: '1.15rem', fontWeight: '800', marginBottom: '20px', color: 'var(--text-dark)' }}>
+              💳 신용카드 추가 등록
+            </h3>
+
+            {/* 신용카드용 실물 모형 그래픽 */}
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
+                color: '#fff',
+                padding: '24px',
+                borderRadius: '16px',
+                marginBottom: '24px',
+                boxShadow: '0 10px 20px rgba(0,0,0,0.15)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '180px',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: '700', opacity: 0.8 }}>CREDIT CARD</span>
+                <span style={{ fontWeight: '800', fontStyle: 'italic', fontSize: '0.95rem' }}>{ccCompany}</span>
+              </div>
+
+              {/* 은빛 IC 칩 모형 */}
+              <div
+                style={{
+                  width: '38px',
+                  height: '28px',
+                  background: 'linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%)',
+                  borderRadius: '6px',
+                  margin: '12px 0 4px 0',
+                  boxShadow: 'inset 0 1px 3px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.1)',
+                  border: '1px solid rgba(0,0,0,0.08)'
+                }}
+              />
+
+              <div style={{ fontSize: '1.15rem', letterSpacing: '0.15em', fontWeight: '700', fontFamily: 'monospace', margin: '8px 0' }}>
+                {ccNumber ? ccNumber.replace(/(.{4})/g, '$1 ').trim() : '•••• •••• •••• ••••'}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', opacity: 0.85, fontWeight: '600' }}>
+                <span>{ccAlias || 'MY CREDIT CARD'}</span>
+                <span>{ccExpiry || 'MM/YY'}</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleRegisterCreditCard} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">카드 별칭 (조회용 명칭)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="예: 현대 ZERO 카드, 회사 법인카드"
+                  value={ccAlias}
+                  onChange={(e) => setCcAlias(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">카드사</label>
+                <select
+                  value={ccCompany}
+                  onChange={(e) => setCcCompany(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0',
+                    color: 'var(--text-dark)',
+                    background: '#fff',
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  <option value="현대카드">현대카드</option>
+                  <option value="신한카드">신한카드</option>
+                  <option value="삼성카드">삼성카드</option>
+                  <option value="국민카드">국민카드</option>
+                  <option value="농협카드">농협카드</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px' }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">카드번호 (16자리)</label>
+                  <input
+                    type="text"
+                    maxLength={16}
+                    className="form-input"
+                    placeholder="16자리 숫자 입력"
+                    value={ccNumber}
+                    onChange={(e) => setCcNumber(e.target.value.replace(/[^0-9]/g, ''))}
+                    required
+                  />
+                </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">유효기간</label>
+                  <input
+                    type="text"
+                    maxLength={5}
+                    className="form-input"
+                    placeholder="MM/YY"
+                    value={ccExpiry}
+                    onChange={(e) => setCcExpiry(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ width: '100%', marginTop: '10px', padding: '12px' }}
+              >
+                신용카드 목록에 추가
               </button>
             </form>
           </div>
