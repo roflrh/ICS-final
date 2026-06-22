@@ -36,6 +36,7 @@ export default function RestaurantDetailPage() {
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [loading, setLoading] = useState(true);
   const [addingId, setAddingId] = useState<string | null>(null); // 담기 애니메이션 효과용
+  const [toastMessage, setToastMessage] = useState<string | null>(null); // 장바구니 담기 성공 알림 토스트용
 
   useEffect(() => {
     if (!id) return;
@@ -79,8 +80,8 @@ export default function RestaurantDetailPage() {
     );
 
     if (success) {
-      // 담기 성공 토스트 알림을 별도로 대체해도 좋으나 데모용으로 간단하게 피드백 제공
-      console.log('장바구니 담기 성공:', menu.name);
+      setToastMessage(`🛒 ${menu.name}이(가) 장바구니에 담겼습니다.`);
+      setTimeout(() => setToastMessage(null), 3000);
     }
   };
 
@@ -263,6 +264,39 @@ export default function RestaurantDetailPage() {
           </div>
         ))}
       </div>
+
+      {/* 토스트 알림 컴포넌트 */}
+      {toastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            background: 'var(--text-dark)',
+            color: '#fff',
+            padding: '14px 24px',
+            borderRadius: 'var(--radius-md)',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            fontSize: '0.9rem',
+            fontWeight: '600',
+            animation: 'toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
+        >
+          {toastMessage}
+        </div>
+      )}
+
+      {/* 애니메이션 스타일 정의 */}
+      <style>{`
+        @keyframes toastSlideIn {
+          from { transform: translateY(100px) scale(0.9); opacity: 0; }
+          to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }

@@ -64,14 +64,15 @@ body {
 
 /* 스크롤바 디자인 */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.02);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 20px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
@@ -288,4 +289,20 @@ body {
   .sidebar-container {
     width: 100%;
   }
+}
+
+/* 사이드바 전용 버튼 호버 스타일링 */
+.sidebar-container .btn-secondary {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: var(--text-main);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: var(--transition-smooth);
+}
+
+.sidebar-container .btn-secondary:hover {
+  background: rgba(234, 88, 12, 0.05); /* 연한 테라코타 오렌지 */
+  border-color: rgba(234, 88, 12, 0.2);
+  color: var(--primary);
+  transform: translateY(-1px);
 }
