@@ -108,12 +108,18 @@ export async function POST(req: NextRequest) {
 
       // 2) 주문상세 테이블에 각 아이템 생성
       for (const item of items) {
+        // selectedOptions가 배열인 경우 문자열로 합쳐서 저장
+        const optionsStr = Array.isArray(item.selectedOptions)
+          ? item.selectedOptions.join(', ')
+          : (typeof item.selectedOptions === 'string' ? item.selectedOptions : null);
+
         await tx.orderItem.create({
           data: {
             orderId: order.id,
             menuId: item.menuId,
             quantity: item.quantity,
             price: item.price, // 주문 당시 가격을 보존
+            selectedOptions: optionsStr, // 선택 옵션 저장
           },
         });
       }

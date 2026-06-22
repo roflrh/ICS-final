@@ -7,6 +7,7 @@ interface OrderItem {
   id: string;
   quantity: number;
   price: number;
+  selectedOptions?: string | null; // [NEW] DB 옵션 필드 추가
   menu: {
     name: string;
     imageUrl: string;
@@ -191,9 +192,16 @@ export default function OrdersPage() {
                           border: '1px solid var(--panel-border)',
                         }}
                       />
-                      <span style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-dark)' }}>
-                        {item.menu.name} <span style={{ color: 'var(--text-muted)', fontWeight: '500' }}>x {item.quantity}</span>
-                      </span>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--text-dark)' }}>
+                          {item.menu.name} <span style={{ color: 'var(--text-muted)', fontWeight: '500' }}>x {item.quantity}</span>
+                        </span>
+                        {item.selectedOptions && (
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            ↳ {item.selectedOptions}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
                       {(item.price * item.quantity).toLocaleString('ko-KR')}원
