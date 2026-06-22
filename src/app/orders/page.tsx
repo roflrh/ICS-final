@@ -151,7 +151,7 @@ export default function OrdersPage() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  borderBottom: '1px solid rgba(255,255,255,0.08)',
+                  borderBottom: '1px solid #f1f5f9',
                   paddingBottom: '16px',
                   marginBottom: '20px',
                   flexWrap: 'wrap',
@@ -160,7 +160,7 @@ export default function OrdersPage() {
               >
                 <div>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>주문 일시: {orderDate}</span>
-                  <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', opacity: 0.6, marginTop: '2px' }}>
                     주문 ID: {order.id}
                   </div>
                 </div>
@@ -320,7 +320,7 @@ export default function OrdersPage() {
                   style={{
                     display: 'flex',
                     justifyContent: 'flex-end',
-                    borderTop: '1px solid rgba(255,255,255,0.05)',
+                    borderTop: '1px solid #f1f5f9',
                     paddingTop: '16px',
                   }}
                 >
@@ -331,7 +331,7 @@ export default function OrdersPage() {
                     style={{
                       padding: '8px 16px',
                       fontSize: '0.85rem',
-                      borderColor: 'rgba(255,255,255,0.1)',
+                      borderColor: '#e2e8f0',
                       color: 'var(--secondary)',
                     }}
                   >
