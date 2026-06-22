@@ -136,6 +136,13 @@ export default function Sidebar() {
           >
             📦 &nbsp; 주문 내역
           </Link>
+          <Link
+            href="/my-info"
+            className={`btn ${pathname === '/my-info' ? 'btn-primary' : 'btn-secondary'}`}
+            style={{ justifyContent: 'flex-start', padding: '10px 14px', fontSize: '0.88rem', width: '100%' }}
+          >
+            👤 &nbsp; 내 정보 관리
+          </Link>
         </nav>
       </div>
 
