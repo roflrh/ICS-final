@@ -142,7 +142,7 @@ export default function RestaurantDetailPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
               <span
                 className="badge badge-preparing"
-                style={{ fontSize: '0.8rem', background: 'rgba(0, 210, 255, 0.1)' }}
+                style={{ fontSize: '0.8rem', background: 'var(--secondary-glow)', color: 'var(--secondary)', borderColor: 'rgba(15, 118, 110, 0.2)' }}
               >
                 {restaurant.category}
               </span>
