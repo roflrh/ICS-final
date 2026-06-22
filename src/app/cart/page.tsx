@@ -612,26 +612,59 @@ export default function CartPage() {
             {/* 카드 실물 모형 그래픽 */}
             <div
               style={{
-                background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                background: 'linear-gradient(135deg, #1e1b4b 0%, #3b0764 50%, var(--primary) 100%)',
                 color: '#fff',
-                padding: '20px',
-                borderRadius: '14px',
-                marginBottom: '20px',
-                boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
+                padding: '24px',
+                borderRadius: '16px',
+                marginBottom: '24px',
+                boxShadow: '0 12px 24px rgba(234,88,12,0.15), 0 4px 8px rgba(0,0,0,0.1)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                height: '160px',
+                height: '180px',
+                position: 'relative',
+                overflow: 'hidden',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>VibePay Quick Card</span>
-                <span style={{ fontWeight: '800', fontStyle: 'italic', fontSize: '0.95rem' }}>{cardCompany}</span>
+              {/* 반짝임 하이라이트 효과용 가상 오버레이 */}
+              <div style={{
+                position: 'absolute',
+                top: '-50%',
+                left: '-50%',
+                width: '200%',
+                height: '200%',
+                background: 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)',
+                pointerEvents: 'none'
+              }} />
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', zIndex: 2 }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: '700', letterSpacing: '0.05em', opacity: 0.9 }}>VibePay Quick</span>
+                <span style={{ fontWeight: '900', fontStyle: 'italic', fontSize: '1rem', letterSpacing: '-0.02em' }}>{cardCompany}</span>
               </div>
-              <div style={{ fontSize: '1.1rem', letterSpacing: '0.15em', fontWeight: '600', fontFamily: 'monospace', margin: '20px 0 10px 0' }}>
+
+              {/* 금빛 IC 칩 모형 */}
+              <div
+                style={{
+                  width: '38px',
+                  height: '28px',
+                  background: 'linear-gradient(135deg, #ffe082 0%, #ffb300 100%)',
+                  borderRadius: '6px',
+                  margin: '12px 0 4px 0',
+                  boxShadow: 'inset 0 1px 3px rgba(255,255,255,0.5), 0 2px 4px rgba(0,0,0,0.15)',
+                  position: 'relative',
+                  zIndex: 2,
+                  border: '1px solid rgba(0,0,0,0.08)'
+                }}
+              >
+                {/* 칩 내부 격자 디자인 */}
+                <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'rgba(0,0,0,0.15)' }} />
+                <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'rgba(0,0,0,0.15)' }} />
+              </div>
+
+              <div style={{ fontSize: '1.2rem', letterSpacing: '0.15em', fontWeight: '700', fontFamily: 'monospace', margin: '8px 0', textShadow: '0 2px 4px rgba(0,0,0,0.3)', zIndex: 2 }}>
                 {cardNumber ? cardNumber.replace(/(.{4})/g, '$1 ').trim() : '•••• •••• •••• ••••'}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', opacity: 0.8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', opacity: 0.9, fontWeight: '600', zIndex: 2 }}>
                 <span>HAEUNDAE VIP</span>
                 <span>{cardExpiry || 'MM/YY'}</span>
               </div>
