@@ -90,7 +90,7 @@ export default function HomePage() {
         <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>인기 식당 목록</h2>
         
         {/* 카테고리 탭 버튼 */}
-        <div style={{ display: 'flex', gap: '10px', background: 'rgba(0,0,0,0.2)', padding: '6px', borderRadius: '12px', border: '1px solid var(--panel-border)' }}>
+        <div style={{ display: 'flex', gap: '8px', background: '#f1f5f9', padding: '5px', borderRadius: '12px', border: '1px solid var(--panel-border)' }}>
           {CATEGORIES.map((category) => (
             <button
               key={category}
@@ -185,14 +185,14 @@ export default function HomePage() {
                     position: 'absolute',
                     top: '12px',
                     left: '12px',
-                    background: 'rgba(0,0,0,0.6)',
+                    background: 'rgba(15, 23, 42, 0.75)',
                     backdropFilter: 'blur(4px)',
                     padding: '4px 10px',
                     borderRadius: '20px',
                     fontSize: '0.75rem',
                     fontWeight: '700',
-                    color: 'var(--text-main)',
-                    border: '1px solid var(--panel-border)',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255,255,255,0.1)',
                   }}
                 >
                   {restaurant.category}
@@ -255,7 +255,7 @@ export default function HomePage() {
                   style={{
                     marginTop: '20px',
                     paddingTop: '16px',
-                    borderTop: '1px solid rgba(255,255,255,0.05)',
+                    borderTop: '1px solid #f1f5f9',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
