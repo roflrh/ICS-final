@@ -371,20 +371,21 @@ export default function OrdersPage() {
         <div
           style={{
             position: 'fixed',
-            bottom: '24px',
-            right: '24px',
+            bottom: '32px',
+            right: '32px',
             background: 'var(--text-dark)',
             color: '#fff',
-            padding: '14px 24px',
+            padding: '16px 36px',
             borderRadius: 'var(--radius-md)',
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.4), 0 0 0 2px var(--secondary), 0 0 25px rgba(22, 163, 74, 0.5)',
             zIndex: 9999,
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
-            fontSize: '0.9rem',
-            fontWeight: '600',
+            gap: '12px',
+            fontSize: '1.15rem',
+            fontWeight: '800',
             animation: 'toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            border: '2px solid var(--secondary)',
           }}
         >
           {toastMessage}
