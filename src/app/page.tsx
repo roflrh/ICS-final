@@ -23,6 +23,19 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState('전체');
   const [loading, setLoading] = useState(true);
 
+  // 그리드 크기 및 다중 필터/정렬 상태 추가
+  const [viewSize, setViewSize] = useState<'large' | 'medium' | 'small'>('medium');
+  const [onlyFastDelivery, setOnlyFastDelivery] = useState(false);
+  const [onlyCoupon, setOnlyCoupon] = useState(false);
+  const [under30Min, setUnder30Min] = useState(false);
+  const [sortBy, setSortBy] = useState<'name' | 'rating' | 'reviews' | 'time'>('name');
+
+  // 가상 쿠폰 보유 체크 헬퍼
+  const checkHasCoupon = (id: string) => {
+    const charCodeSum = id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return charCodeSum % 2 === 0;
+  };
+
   // 식당 데이터 가져오기
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -42,6 +55,34 @@ export default function HomePage() {
 
     fetchRestaurants();
   }, [activeCategory]);
+
+  // 실시간 다중 필터 & 정렬 처리
+  const processedRestaurants = restaurants
+    .filter((r) => {
+      if (onlyFastDelivery && !r.isFastDelivery) return false;
+      if (onlyCoupon && !checkHasCoupon(r.id)) return false;
+      if (under30Min && (r.deliveryTimeMax ?? 35) > 30) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'rating') {
+        return (b.rating ?? 0) - (a.rating ?? 0);
+      }
+      if (sortBy === 'reviews') {
+        return (b.reviewCount ?? 0) - (a.reviewCount ?? 0);
+      }
+      if (sortBy === 'time') {
+        return (a.deliveryTimeMax ?? 30) - (b.deliveryTimeMax ?? 30);
+      }
+      return a.name.localeCompare(b.name, 'ko-KR');
+    });
+
+  // 동적 그리드 칼럼 수 반환
+  const getGridTemplateColumns = () => {
+    if (viewSize === 'large') return 'repeat(auto-fill, minmax(420px, 1fr))';
+    if (viewSize === 'small') return 'repeat(auto-fill, minmax(220px, 1fr))';
+    return 'repeat(auto-fill, minmax(310px, 1fr))';
+  };
 
   return (
     <div>
@@ -82,7 +123,7 @@ export default function HomePage() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '32px',
+          marginBottom: '24px',
           flexWrap: 'wrap',
           gap: '16px',
         }}
@@ -111,28 +152,199 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* 고급 다중 필터 & 정렬 & 그리드 스위처 제어 패널 */}
+      <div
+        className="glass-panel"
+        style={{
+          padding: '16px 24px',
+          borderRadius: 'var(--radius-md)',
+          marginBottom: '32px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '20px',
+          background: 'rgba(255, 255, 255, 0.45)',
+          border: '1px solid var(--panel-border)',
+        }}
+      >
+        {/* 다중 필터 토글 칩 */}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)', marginRight: '6px' }}>필터</span>
+          <button
+            onClick={() => setOnlyFastDelivery(!onlyFastDelivery)}
+            style={{
+              padding: '8px 16px',
+              fontSize: '0.82rem',
+              fontWeight: '700',
+              borderRadius: '20px',
+              border: '1px solid',
+              borderColor: onlyFastDelivery ? 'var(--secondary)' : '#cbd5e1',
+              background: onlyFastDelivery ? 'rgba(13, 148, 136, 0.08)' : 'transparent',
+              color: onlyFastDelivery ? 'var(--secondary)' : 'var(--text-muted)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: onlyFastDelivery ? '0 4px 8px rgba(13, 148, 136, 0.1)' : 'none',
+            }}
+          >
+            🚀 한집배달
+          </button>
+          <button
+            onClick={() => setOnlyCoupon(!onlyCoupon)}
+            style={{
+              padding: '8px 16px',
+              fontSize: '0.82rem',
+              fontWeight: '700',
+              borderRadius: '20px',
+              border: '1px solid',
+              borderColor: onlyCoupon ? 'var(--primary)' : '#cbd5e1',
+              background: onlyCoupon ? 'rgba(239, 68, 68, 0.06)' : 'transparent',
+              color: onlyCoupon ? 'var(--primary)' : 'var(--text-muted)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: onlyCoupon ? '0 4px 8px rgba(239, 68, 68, 0.1)' : 'none',
+            }}
+          >
+            🏷️ 쿠폰할인
+          </button>
+          <button
+            onClick={() => setUnder30Min(!under30Min)}
+            style={{
+              padding: '8px 16px',
+              fontSize: '0.82rem',
+              fontWeight: '700',
+              borderRadius: '20px',
+              border: '1px solid',
+              borderColor: under30Min ? '#0284c7' : '#cbd5e1',
+              background: under30Min ? 'rgba(2, 132, 199, 0.06)' : 'transparent',
+              color: under30Min ? '#0284c7' : 'var(--text-muted)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: under30Min ? '0 4px 8px rgba(2, 132, 199, 0.1)' : 'none',
+            }}
+          >
+            ⏱️ 30분이내
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* 실시간 정렬 셀렉터 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>정렬</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              style={{
+                padding: '6px 12px',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: 'var(--text-dark)',
+                cursor: 'pointer',
+                outline: 'none',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <option value="name">🔤 기본 이름순</option>
+              <option value="rating">⭐ 평점 높은순</option>
+              <option value="reviews">💬 리뷰 많은순</option>
+              <option value="time">⏱️ 배달 빠른순</option>
+            </select>
+          </div>
+
+          {/* 그리드 크기 3단계 스위처 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>그리드 뷰</span>
+            <div style={{ display: 'flex', background: '#f1f5f9', padding: '4px', borderRadius: '8px', border: '1px solid var(--panel-border)' }}>
+              <button
+                onClick={() => setViewSize('large')}
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.78rem',
+                  fontWeight: '700',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: viewSize === 'large' ? '#ffffff' : 'transparent',
+                  color: viewSize === 'large' ? 'var(--text-dark)' : 'var(--text-muted)',
+                  boxShadow: viewSize === 'large' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                🖼️ 큼직하게
+              </button>
+              <button
+                onClick={() => setViewSize('medium')}
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.78rem',
+                  fontWeight: '700',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: viewSize === 'medium' ? '#ffffff' : 'transparent',
+                  color: viewSize === 'medium' ? 'var(--text-dark)' : 'var(--text-muted)',
+                  boxShadow: viewSize === 'medium' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                📱 기본
+              </button>
+              <button
+                onClick={() => setViewSize('small')}
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.78rem',
+                  fontWeight: '700',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: viewSize === 'small' ? '#ffffff' : 'transparent',
+                  color: viewSize === 'small' ? 'var(--text-dark)' : 'var(--text-muted)',
+                  boxShadow: viewSize === 'small' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                📋 촘촘하게
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 로딩 상태 렌더링 */}
       {loading ? (
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gridTemplateColumns: getGridTemplateColumns(),
             gap: '28px',
           }}
         >
-          {[1, 2, 3].map((n) => (
+          {[1, 2, 3, 4, 5, 6].map((n) => (
             <div
               key={n}
               className="glass-panel"
               style={{
-                height: '350px',
+                height: viewSize === 'large' ? '390px' : viewSize === 'small' ? '280px' : '340px',
                 animation: 'pulse 1.5s infinite ease-in-out',
                 opacity: 0.6,
               }}
             />
           ))}
         </div>
-      ) : restaurants.length === 0 ? (
+      ) : processedRestaurants.length === 0 ? (
         <div
           className="glass-panel"
           style={{
@@ -142,18 +354,18 @@ export default function HomePage() {
             fontSize: '1.1rem',
           }}
         >
-          🔍 해당 카테고리에 등록된 식당이 아직 없습니다.
+          🔍 조건에 맞는 식당이 없습니다. 필터를 해제해 보세요!
         </div>
       ) : (
         /* 식당 카드 그리드 */
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gridTemplateColumns: getGridTemplateColumns(),
             gap: '28px',
           }}
         >
-          {restaurants.map((restaurant) => (
+          {processedRestaurants.map((restaurant) => (
             <Link
               key={restaurant.id}
               href={`/restaurants/${restaurant.id}`}
@@ -164,10 +376,19 @@ export default function HomePage() {
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
               }}
             >
               {/* 식당 이미지 */}
-              <div style={{ width: '100%', height: '180px', overflow: 'hidden', position: 'relative' }}>
+              <div
+                style={{
+                  width: '100%',
+                  height: viewSize === 'large' ? '220px' : viewSize === 'small' ? '135px' : '175px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  transition: 'height 0.3s ease',
+                }}
+              >
                 <img
                   src={restaurant.imageUrl}
                   alt={restaurant.name}
@@ -180,6 +401,8 @@ export default function HomePage() {
                   onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.08)')}
                   onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1.0)')}
                 />
+                
+                {/* 카테고리 배지 */}
                 <span
                   style={{
                     position: 'absolute',
@@ -197,6 +420,30 @@ export default function HomePage() {
                 >
                   {restaurant.category}
                 </span>
+
+                {/* 첫주문 쿠폰할인 배지 (가상) */}
+                {checkHasCoupon(restaurant.id) && (
+                  <span
+                    className="badge-coupon"
+                    style={{
+                      position: 'absolute',
+                      top: '42px',
+                      left: '12px',
+                      background: 'linear-gradient(135deg, #db2777 0%, #be185d 100%)',
+                      padding: '4px 10px',
+                      borderRadius: '20px',
+                      fontSize: '0.72rem',
+                      fontWeight: '800',
+                      color: '#ffffff',
+                      boxShadow: '0 4px 8px rgba(219,39,119,0.3)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    🏷️ 3,000원 쿠폰
+                  </span>
+                )}
 
                 {/* 쿠팡이츠 스타일: 한집배달🚀 배지 노출 */}
                 {restaurant.isFastDelivery && (
@@ -222,8 +469,24 @@ export default function HomePage() {
               </div>
 
               {/* 식당 텍스트 설명 */}
-              <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '6px', color: 'var(--text-dark)' }}>
+              <div
+                style={{
+                  padding: viewSize === 'small' ? '16px' : '24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  flexGrow: 1,
+                  transition: 'padding 0.3s ease',
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: viewSize === 'large' ? '1.35rem' : viewSize === 'small' ? '1.05rem' : '1.2rem',
+                    fontWeight: '800',
+                    marginBottom: '6px',
+                    color: 'var(--text-dark)',
+                    transition: 'font-size 0.3s ease',
+                  }}
+                >
                   {restaurant.name}
                 </h3>
                 
@@ -243,7 +506,7 @@ export default function HomePage() {
                     fontSize: '0.9rem',
                     lineHeight: '1.5',
                     display: '-webkit-box',
-                    WebkitLineClamp: 2,
+                    WebkitLineClamp: viewSize === 'small' ? 1 : 2,
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     flexGrow: 1,
