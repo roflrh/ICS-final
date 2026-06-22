@@ -14,6 +14,7 @@ interface Restaurant {
   deliveryTimeMin: number;
   deliveryTimeMax: number;
   isFastDelivery: boolean;
+  hasCoupon: boolean; // [NEW] DB 쿠폰 유무 필드
 }
 
 const CATEGORIES = ['전체', '한식', '양식', '아시안'];
@@ -29,12 +30,6 @@ export default function HomePage() {
   const [onlyCoupon, setOnlyCoupon] = useState(false);
   const [under30Min, setUnder30Min] = useState(false);
   const [sortBy, setSortBy] = useState<'name' | 'rating' | 'reviews' | 'time'>('name');
-
-  // 가상 쿠폰 보유 체크 헬퍼
-  const checkHasCoupon = (id: string) => {
-    const charCodeSum = id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
-    return charCodeSum % 2 === 0;
-  };
 
   // 식당 데이터 가져오기
   useEffect(() => {
@@ -60,7 +55,7 @@ export default function HomePage() {
   const processedRestaurants = restaurants
     .filter((r) => {
       if (onlyFastDelivery && !r.isFastDelivery) return false;
-      if (onlyCoupon && !checkHasCoupon(r.id)) return false;
+      if (onlyCoupon && !r.hasCoupon) return false;
       if (under30Min && (r.deliveryTimeMax ?? 35) > 30) return false;
       return true;
     })
@@ -94,7 +89,7 @@ export default function HomePage() {
           borderRadius: 'var(--radius-lg)',
           marginBottom: '40px',
           textAlign: 'center',
-          background: 'linear-gradient(135deg, rgba(255, 94, 58, 0.15) 0%, rgba(0, 210, 255, 0.05) 100%)',
+          background: 'linear-gradient(135deg, var(--primary-glow) 0%, var(--secondary-glow) 100%)',
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -421,10 +416,10 @@ export default function HomePage() {
                   {restaurant.category}
                 </span>
 
-                {/* 첫주문 쿠폰할인 배지 (가상) */}
-                {checkHasCoupon(restaurant.id) && (
+                {/* 첫주문 쿠폰할인 배지 */}
+                {restaurant.hasCoupon && (
                   <span
-                    className="badge-coupon"
+                    className="badge badge-coupon"
                     style={{
                       position: 'absolute',
                       top: '42px',
@@ -448,7 +443,7 @@ export default function HomePage() {
                 {/* 쿠팡이츠 스타일: 한집배달🚀 배지 노출 */}
                 {restaurant.isFastDelivery && (
                   <span
-                    className="badge-fast"
+                    className="badge badge-fast"
                     style={{
                       position: 'absolute',
                       top: '12px',
