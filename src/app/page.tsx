@@ -37,20 +37,64 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState('전체');
   const [loading, setLoading] = useState(true);
 
-  // 카테고리 가로 휠 스크롤 지원용 ref 및 effect
+  // 카테고리 가로 휠 및 드래그 스크롤 지원용 ref 및 effect
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (el) {
+      // 1. 휠 스크롤
       const handleWheel = (e: WheelEvent) => {
         if (e.deltaY === 0) return;
         e.preventDefault();
         el.scrollLeft += e.deltaY * 1.2;
       };
       el.addEventListener('wheel', handleWheel, { passive: false });
+
+      // 2. 드래그 스크롤 (마우스 Grab & Scroll)
+      let isDown = false;
+      let startX: number;
+      let scrollLeftVal: number;
+
+      const handleMouseDown = (e: MouseEvent) => {
+        isDown = true;
+        el.style.cursor = 'grabbing';
+        el.style.userSelect = 'none'; // 드래그 중 텍스트 선택 방지
+        startX = e.pageX - el.offsetLeft;
+        scrollLeftVal = el.scrollLeft;
+      };
+
+      const handleMouseLeave = () => {
+        isDown = false;
+        el.style.cursor = 'grab';
+      };
+
+      const handleMouseUp = () => {
+        isDown = false;
+        el.style.cursor = 'grab';
+        el.style.removeProperty('user-select');
+      };
+
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - el.offsetLeft;
+        const walk = (x - startX) * 1.5; // 스크롤 감도 배율
+        el.scrollLeft = scrollLeftVal - walk;
+      };
+
+      el.style.cursor = 'grab';
+      el.addEventListener('mousedown', handleMouseDown);
+      el.addEventListener('mouseleave', handleMouseLeave);
+      el.addEventListener('mouseup', handleMouseUp);
+      el.addEventListener('mousemove', handleMouseMove);
+
       return () => {
         el.removeEventListener('wheel', handleWheel);
+        el.removeEventListener('mousedown', handleMouseDown);
+        el.removeEventListener('mouseleave', handleMouseLeave);
+        el.removeEventListener('mouseup', handleMouseUp);
+        el.removeEventListener('mousemove', handleMouseMove);
       };
     }
   }, []);
