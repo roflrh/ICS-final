@@ -6,7 +6,7 @@
 ---
 
 ## 🚀 실시간 공개 배포 주소 (Vercel)
-- **배포 URL**: `[실제 배포 완료 후 본인의 Vercel URL을 여기에 기입해주세요]`
+- **배포 URL**: https://ics-final.vercel.app
 - **GitHub 저장소**: `[본인의 GitHub 저장소 주소]`
 
 ---
