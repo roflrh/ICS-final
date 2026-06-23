@@ -141,7 +141,7 @@ async function main() {
     data: {
       name: '장산역 돈카츠 하우스',
       description: '제주산 흑돼지를 엄선하여 24시간 숙성 후 튀겨낸 프리미엄 카츠.',
-      category: '양식',
+      category: '일식',
       imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=600&auto=format&fit=crop&q=60',
       rating: 4.9,
       reviewCount: 210,
@@ -217,8 +217,8 @@ async function main() {
   await prisma.restaurant.create({
     data: {
       name: '송정해변 수제버거 조인트',
-      description: '100% 프라임 소고기 패티와 매일 구워내는 고소한 번의 정통 아메리칸 수제버거.',
-      category: '양식',
+      description: '100% 프라임 소고기 패티 and 매일 구워내는 고소한 번의 정통 아메리칸 수제버거.',
+      category: '패스트푸드',
       imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=60',
       rating: 4.8,
       reviewCount: 320,
@@ -256,7 +256,7 @@ async function main() {
     data: {
       name: '마린시티 딤섬 스튜디오',
       description: '홍콩 현지 셰프가 선사하는 다채로운 수제 딤섬과 정통 중화요리.',
-      category: '아시안',
+      category: '중식',
       imageUrl: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&auto=format&fit=crop&q=60',
       rating: 4.7,
       reviewCount: 112,
@@ -295,7 +295,7 @@ async function main() {
     data: {
       name: '해운대 전통시장 닭강정',
       description: '3대째 내려오는 특제 조청 소스로 버무려 식어도 바삭하고 맛있는 닭강정 명가.',
-      category: '한식',
+      category: '패스트푸드',
       imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=60',
       rating: 4.8,
       reviewCount: 415,
@@ -333,7 +333,7 @@ async function main() {
     data: {
       name: '미포항 화덕피자 팩토리',
       description: '참나무 장작 화덕에서 400도 고온으로 빠르게 구워내 도우가 쫄깃한 나폴리 피자.',
-      category: '양식',
+      category: '패스트푸드',
       imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=60',
       rating: 4.9,
       reviewCount: 180,
@@ -372,7 +372,7 @@ async function main() {
     data: {
       name: '벡스코 마라탕 전문점',
       description: '사골 육수의 깊고 구수한 맛에 매콤한 마라유의 짜릿한 매력을 담은 정통 마라탕.',
-      category: '아시안',
+      category: '중식',
       imageUrl: 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=600&auto=format&fit=crop&q=60',
       rating: 4.5,
       reviewCount: 250,
@@ -450,7 +450,7 @@ async function main() {
     data: {
       name: '해운대역 라멘 베이스',
       description: '돼지 사골을 24시간 가마솥에서 고아내어 국물이 걸쭉하고 깊은 하카타식 라멘.',
-      category: '아시안',
+      category: '일식',
       imageUrl: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=60',
       rating: 4.6,
       reviewCount: 130,

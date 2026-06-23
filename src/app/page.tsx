@@ -17,7 +17,17 @@ interface Restaurant {
   hasCoupon: boolean; // [NEW] DB 쿠폰 유무 필드
 }
 
-const CATEGORIES = ['전체', '한식', '양식', '아시안'];
+const CATEGORIES = ['전체', '한식', '중식', '일식', '양식', '패스트푸드', '아시안'];
+
+const CATEGORY_EMOJIS: Record<string, string> = {
+  '전체': '🍽️ 전체',
+  '한식': '🍚 한식',
+  '중식': '🥢 중식',
+  '일식': '🍣 일식',
+  '양식': '🍝 양식',
+  '패스트푸드': '🍔 패스트푸드',
+  '아시안': '🍜 아시안',
+};
 
 export default function HomePage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -125,23 +135,49 @@ export default function HomePage() {
       >
         <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>인기 식당 목록</h2>
         
-        {/* 카테고리 탭 버튼 */}
-        <div style={{ display: 'flex', gap: '8px', background: '#f1f5f9', padding: '5px', borderRadius: '12px', border: '1px solid var(--panel-border)' }}>
+        {/* 카테고리 가로 스크롤 칩 리스트 */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '12px',
+            overflowX: 'auto',
+            padding: '8px 4px',
+            margin: '0 -4px',
+            whiteSpace: 'nowrap',
+            maxWidth: '650px',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
+          <style>{`
+            div::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
           {CATEGORIES.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
               className="btn"
               style={{
-                padding: '8px 16px',
+                padding: '10px 20px',
                 fontSize: '0.88rem',
-                borderRadius: '8px',
-                background: activeCategory === category ? 'var(--primary)' : 'transparent',
+                fontWeight: '700',
+                borderRadius: '24px',
+                border: activeCategory === category ? 'none' : '1px solid var(--panel-border)',
+                background: activeCategory === category ? 'var(--primary)' : '#ffffff',
                 color: activeCategory === category ? '#fff' : 'var(--text-muted)',
-                boxShadow: activeCategory === category ? '0 4px 12px var(--primary-glow)' : 'none',
+                boxShadow: activeCategory === category ? '0 6px 16px var(--primary-glow)' : '0 2px 4px rgba(0,0,0,0.02)',
+                cursor: 'pointer',
+                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                flexShrink: 0,
               }}
             >
-              {category}
+              {CATEGORY_EMOJIS[category] || category}
             </button>
           ))}
         </div>
