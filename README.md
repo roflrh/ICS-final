@@ -7,7 +7,7 @@
 
 ## 🚀 실시간 공개 배포 주소 (Vercel)
 - **배포 URL**: https://ics-final.vercel.app
-- **GitHub 저장소**: `[본인의 GitHub 저장소 주소]`
+- **GitHub 저장소**: https://github.com/roflrh/ICS-final
 
 ---
 
