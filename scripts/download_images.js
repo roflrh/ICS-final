@@ -25,8 +25,8 @@ const images = [
   // 2. 추가 피드백 세부 분류 이미지
   { name: 'roast_chicken.jpg', url: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=800&auto=format&fit=crop&q=60' },
   { name: 'salad.jpg', url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop&q=60' },
-  { name: 'maratang.jpg', url: 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800&auto=format&fit=crop&q=60' },
-  { name: 'marashangyo.jpg', url: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800&auto=format&fit=crop&q=60' },
+  { name: 'maratang.jpg', url: 'https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=800&auto=format&fit=crop&q=60' },
+  { name: 'marashangyo.jpg', url: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=800&auto=format&fit=crop&q=60' },
   { name: 'gguobarou.jpg', url: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?w=800&auto=format&fit=crop&q=60' },
   { name: 'sashimi.jpg', url: 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=800&auto=format&fit=crop&q=60' },
   { name: 'vietnamese_pho.jpg', url: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=800&auto=format&fit=crop&q=60' },
