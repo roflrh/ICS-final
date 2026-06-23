@@ -20,6 +20,8 @@ interface Restaurant {
 
 const CATEGORIES = ['전체', '한식', '중식', '일식', '양식', '버거', '피자', '치킨', '아시안'];
 
+const SUB_TAGS = ['혼밥', '회식', '야식', '해장', '매콤', '든든', '가벼움', '프리미엄'];
+
 const CATEGORY_EMOJIS: Record<string, string> = {
   '전체': '🍽️ 전체',
   '한식': '🍚 한식',
@@ -36,6 +38,15 @@ export default function HomePage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [activeCategory, setActiveCategory] = useState('전체');
   const [loading, setLoading] = useState(true);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const handleTagToggle = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
 
   // 카테고리 가로 휠 및 드래그 스크롤 지원용 ref 및 effect
   const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -132,6 +143,13 @@ export default function HomePage() {
       if (onlyFastDelivery && !r.isFastDelivery) return false;
       if (onlyCoupon && !r.hasCoupon) return false;
       if (under30Min && (r.deliveryTimeMax ?? 35) > 30) return false;
+      
+      // 상황/용도 보조 태그 OR 필터링 적용
+      if (selectedTags.length > 0) {
+        const hasMatchingTag = r.subTags.some(tag => selectedTags.includes(tag));
+        if (!hasMatchingTag) return false;
+      }
+      
       return true;
     })
     .sort((a, b) => {
@@ -342,6 +360,36 @@ export default function HomePage() {
           >
             ⏱️ 30분이내
           </button>
+
+          {/* 상황/용도 보조 태그 필터 칩들 (OR 조건 필터링) */}
+          <span style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)', marginLeft: '12px', marginRight: '6px' }}>상황</span>
+          {SUB_TAGS.map((tag) => {
+            const isSelected = selectedTags.includes(tag);
+            return (
+              <button
+                key={tag}
+                onClick={() => handleTagToggle(tag)}
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '0.82rem',
+                  fontWeight: '700',
+                  borderRadius: '20px',
+                  border: '1px solid',
+                  borderColor: isSelected ? 'var(--primary)' : '#cbd5e1',
+                  background: isSelected ? 'rgba(239, 68, 68, 0.06)' : 'transparent',
+                  color: isSelected ? 'var(--primary)' : 'var(--text-muted)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: isSelected ? '0 4px 8px rgba(239, 68, 68, 0.1)' : 'none',
+                }}
+              >
+                #{tag}
+              </button>
+            );
+          })}
         </div>
 
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
