@@ -54,6 +54,13 @@ export default function MyInfoPage() {
   const [ccNumber, setCcNumber] = useState('');
   const [ccExpiry, setCcExpiry] = useState('');
 
+  // 회원정보 수정 상태
+  const [showProfileEditModal, setShowProfileEditModal] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
   // 1. 유저 정보 조회 및 로컬 스토리지 로드
   useEffect(() => {
     const fetchUser = async () => {
@@ -62,6 +69,7 @@ export default function MyInfoPage() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+          setEditName(data.user.name); // 이름 수정용 기본값 셋팅
         } else {
           // 비로그인 상태 가드: 로그인 페이지로 리다이렉트
           alert('로그인이 필요한 페이지입니다.');
@@ -183,6 +191,89 @@ export default function MyInfoPage() {
     alert('🗑️ 신용카드가 정상적으로 제거되었습니다.');
   };
 
+  // 회원정보 수정 핸들러
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editName.trim() && !newPassword) {
+      alert('변경할 이름을 입력하거나 새 비밀번호를 입력해주세요.');
+      return;
+    }
+
+    if (newPassword && newPassword.length < 6) {
+      alert('새 비밀번호는 최소 6자 이상이어야 합니다.');
+      return;
+    }
+
+    if (newPassword && newPassword !== confirmNewPassword) {
+      alert('새 비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/update-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editName.trim(),
+          currentPassword: currentPassword || undefined,
+          newPassword: newPassword || undefined,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+        setShowProfileEditModal(false);
+        // 비밀번호 폼 리셋
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmNewPassword('');
+        alert('✨ 회원정보가 성공적으로 수정되었습니다.');
+      } else {
+        const data = await res.json();
+        alert(data.error || '회원정보 수정 중 오류가 발생했습니다.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('회원정보 수정 중 통신 오류가 발생했습니다.');
+    }
+  };
+
+  // 회원탈퇴 핸들러
+  const handleDeleteAccount = async () => {
+    if (!confirm('정말로 회원탈퇴를 진행하시겠습니까?\n이 작업은 되돌릴 수 없으며, 모든 주문 내역과 등록된 자산 정보가 영구 소거됩니다.')) {
+      return;
+    }
+
+    const finalConfirm = prompt('탈퇴 처리를 확정하려면 "탈퇴합니다"를 입력해주세요.');
+    if (finalConfirm !== '탈퇴합니다') {
+      alert('입력한 텍스트가 일치하지 않아 회원탈퇴 요청이 취소되었습니다.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/delete-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (res.ok) {
+        alert('회원탈퇴 처리가 완료되었습니다. 그동안 이용해주셔서 대단히 감사합니다.');
+        // 홈으로 보낸 뒤 브라우저 강제 리로드하여 잔여 데이터 제거
+        router.push('/');
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      } else {
+        const data = await res.json();
+        alert(data.error || '회원탈퇴 처리 중 오류가 발생했습니다.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('회원탈퇴 처리 중 통신 오류가 발생했습니다.');
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-muted)' }}>
@@ -209,19 +300,39 @@ export default function MyInfoPage() {
             </div>
           </div>
           
-          <span
-            className="badge badge-popular"
-            style={{
-              fontSize: '0.82rem',
-              padding: '6px 16px',
-              background: 'rgba(217, 119, 6, 0.08)',
-              color: 'var(--badge-popular)',
-              border: '1px solid rgba(217, 119, 6, 0.2)',
-              fontWeight: '800'
-            }}
-          >
-            🌟 해운대 VIP 단골회원
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button
+              type="button"
+              onClick={() => {
+                setEditName(user.name);
+                setShowProfileEditModal(true);
+              }}
+              className="btn btn-secondary"
+              style={{
+                padding: '8px 16px',
+                fontSize: '0.85rem',
+                fontWeight: '700',
+                borderColor: 'var(--primary)',
+                color: 'var(--primary)',
+                background: 'rgba(234, 88, 12, 0.03)'
+              }}
+            >
+              👑 회원정보 수정
+            </button>
+            <span
+              className="badge badge-popular"
+              style={{
+                fontSize: '0.82rem',
+                padding: '6px 16px',
+                background: 'rgba(217, 119, 6, 0.08)',
+                color: 'var(--badge-popular)',
+                border: '1px solid rgba(217, 119, 6, 0.2)',
+                fontWeight: '800'
+              }}
+            >
+              🌟 해운대 VIP 단골회원
+            </span>
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
@@ -714,6 +825,168 @@ export default function MyInfoPage() {
           </div>
         </div>
       )}
+
+      {/* 회원정보 수정 모달 */}
+      {showProfileEditModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.4)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 999,
+          }}
+        >
+          <div
+            className="glass-panel"
+            style={{
+              width: '420px',
+              padding: '28px',
+              borderRadius: '20px',
+              position: 'relative',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            <button
+              onClick={() => {
+                setShowProfileEditModal(false);
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmNewPassword('');
+              }}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'transparent',
+                border: 'none',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                color: 'var(--text-muted)',
+              }}
+            >
+              ✕
+            </button>
+
+            <h3 style={{ fontSize: '1.15rem', fontWeight: '800', marginBottom: '20px', color: 'var(--text-dark)' }}>
+              👑 회원정보 수정
+            </h3>
+
+            <form onSubmit={handleUpdateProfile} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">이메일 계정</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={user.email}
+                  disabled
+                  style={{ background: '#f8fafc', color: 'var(--text-muted)', cursor: 'not-allowed' }}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">이름</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="변경할 이름을 입력하세요"
+                  required
+                />
+              </div>
+
+              <div style={{ borderTop: '1px dashed #e2e8f0', margin: '8px 0' }} />
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">현재 비밀번호 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>(비밀번호 변경 시 필수)</span></label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="현재 비밀번호를 입력하세요"
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">새 비밀번호 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>(최소 6자 이상)</span></label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="변경할 새 비밀번호를 입력하세요"
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">새 비밀번호 확인</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  placeholder="새 비밀번호를 다시 입력하세요"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ width: '100%', marginTop: '10px', padding: '12px' }}
+              >
+                회원정보 저장하기
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 회원 탈퇴 영역 (Danger Zone) */}
+      <div
+        className="glass-panel"
+        style={{
+          padding: '28px',
+          borderRadius: 'var(--radius-md)',
+          border: '1px solid rgba(239, 68, 68, 0.2)',
+          background: 'rgba(239, 68, 68, 0.02)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '20px',
+          marginTop: '32px'
+        }}
+      >
+        <div>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#ef4444', marginBottom: '6px' }}>⚠️ 계정 탈퇴 및 서비스 해지</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>
+            계정을 탈퇴하시면 고객님의 주문 내역 및 간편 카드 자산 정보가 즉시 영구 파기되며 복구할 수 없습니다.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={handleDeleteAccount}
+          className="btn btn-secondary"
+          style={{
+            borderColor: 'rgba(239, 68, 68, 0.25)',
+            color: '#ef4444',
+            fontWeight: '700',
+            padding: '10px 20px',
+            fontSize: '0.85rem',
+            background: 'transparent'
+          }}
+        >
+          회원탈퇴
+        </button>
+      </div>
     </div>
   );
 }
