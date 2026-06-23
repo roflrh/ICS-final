@@ -26,7 +26,7 @@ async function main() {
       description: '숯불향 가득한 초벌 생삼겹살 전문점입니다.',
       category: '한식',
       subTags: ['고기', '구이', '찌개'],
-      imageUrl: 'https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?w=600&auto=format&fit=crop&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?w=600&auto=format&fit=crop&q=60&v=3',
       rating: 4.8,
       reviewCount: 142,
       deliveryTimeMin: 25,
@@ -304,7 +304,7 @@ async function main() {
       description: '3대째 내려오는 특제 조청 소스로 버무려 식어도 바삭하고 맛있는 닭강정 명가.',
       category: '치킨',
       subTags: ['닭강정', '튀김', '안주'],
-      imageUrl: 'https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=600&auto=format&fit=crop&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=600&auto=format&fit=crop&q=60&v=3',
       rating: 4.8,
       reviewCount: 415,
       deliveryTimeMin: 20,
@@ -424,7 +424,7 @@ async function main() {
       category: '한식',
       subTags: ['곱창', '전골', '안주'],
       hasCoupon: true,
-      imageUrl: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?w=600&auto=format&fit=crop&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?w=600&auto=format&fit=crop&q=60&v=3',
       rating: 4.7,
       reviewCount: 195,
       deliveryTimeMin: 25,
@@ -503,7 +503,7 @@ async function main() {
       category: '한식',
       subTags: ['김치찜', '한식안주', '집밥'],
       hasCoupon: true,
-      imageUrl: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=600&auto=format&fit=crop&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=600&auto=format&fit=crop&q=60&v=3',
       rating: 4.8,
       reviewCount: 280,
       deliveryTimeMin: 25,
@@ -529,6 +529,240 @@ async function main() {
             description: '김치찜 국물에 따뜻하게 적셔 먹는 고소하고 부드러운 손두부 사리.',
             price: 2000,
             imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=60',
+          },
+        ],
+      },
+    },
+  });
+
+  // 14. 센텀 스시 헤븐 (일식, 한집배달 제공)
+  await prisma.restaurant.create({
+    data: {
+      name: '센텀 스시 헤븐',
+      description: '장인의 손끝에서 쥐어지는 신선한 특선 초밥 전문점입니다.',
+      category: '일식',
+      subTags: ['초밥', '스시', '사시미'],
+      imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&auto=format&fit=crop&q=60&v=3',
+      rating: 4.9,
+      reviewCount: 302,
+      deliveryTimeMin: 20,
+      deliveryTimeMax: 30,
+      isFastDelivery: true,
+      hasCoupon: true,
+      menus: {
+        create: [
+          {
+            name: '모듬초밥 A (12pcs)',
+            description: '참치, 광어, 연어 등 제철 활어로 구성된 가성비 모듬초밥.',
+            price: 22000,
+            imageUrl: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600&auto=format&fit=crop&q=60',
+            isPopular: true,
+          },
+          {
+            name: '특선 사시미 (소)',
+            description: '완도산 대광어와 생연어로 가득 채운 고품격 안주 사시미.',
+            price: 38000,
+            imageUrl: 'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=600&auto=format&fit=crop&q=60',
+          },
+        ],
+      },
+    },
+  });
+
+  // 15. 해운대 가마솥 돼지국밥 (한식, 한집배달 미제공)
+  await prisma.restaurant.create({
+    data: {
+      name: '해운대 가마솥 돼지국밥',
+      description: '진한 사골 육수에 야들야들한 머릿고기가 가득한 부산 대표 국밥.',
+      category: '한식',
+      subTags: ['국밥', '해장', '수육'],
+      imageUrl: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=60&v=3',
+      rating: 4.8,
+      reviewCount: 420,
+      deliveryTimeMin: 15,
+      deliveryTimeMax: 25,
+      isFastDelivery: false,
+      menus: {
+        create: [
+          {
+            name: '명품 돼지국밥',
+            description: '가마솥에서 24시간 우려내 국물이 깊고 진한 시그니처 돼지국밥.',
+            price: 9500,
+            imageUrl: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=60',
+            isPopular: true,
+          },
+          {
+            name: '맛보기 수육 (150g)',
+            description: '국밥과 함께 곁들이기 좋은 부드럽고 담백한 국내산 돼지고기 수육.',
+            price: 12000,
+            imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=60',
+          },
+        ],
+      },
+    },
+  });
+
+  // 16. 해리단길 크러쉬버거 (버거, 한집배달 제공)
+  await prisma.restaurant.create({
+    data: {
+      name: '해리단길 크러쉬버거',
+      description: '그릴에 눌러 구워 불맛 가득한 스매시 버거 전문 조인트.',
+      category: '버거',
+      subTags: ['수제버거', '치즈버거', '프라이즈'],
+      imageUrl: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&auto=format&fit=crop&q=60&v=3',
+      rating: 4.7,
+      reviewCount: 154,
+      deliveryTimeMin: 20,
+      deliveryTimeMax: 30,
+      isFastDelivery: true,
+      hasCoupon: true,
+      menus: {
+        create: [
+          {
+            name: '베이컨 클래식 스매시버거',
+            description: '마이야르 반응을 극대화한 소고기 패티와 바삭한 베이컨, 아메리칸 치즈.',
+            price: 9000,
+            imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=60',
+            isPopular: true,
+          },
+          {
+            name: '칠리 치즈 프라이즈',
+            description: '수제 칠리 미트 소스와 체다 치즈 소스를 듬뿍 얹은 프렌치 프라이.',
+            price: 6000,
+            imageUrl: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=600&auto=format&fit=crop&q=60',
+          },
+        ],
+      },
+    },
+  });
+
+  // 17. 송정 블루 라인 브런치 카페 (양식, 한집배달 미제공)
+  await prisma.restaurant.create({
+    data: {
+      name: '송정 블루 라인 브런치 카페',
+      description: '해변을 바라보며 즐기는 정통 아메리칸 스타일의 올데이 브런치.',
+      category: '양식',
+      subTags: ['브런치', '에그베네딕트', '커피'],
+      imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&auto=format&fit=crop&q=60&v=3',
+      rating: 4.6,
+      reviewCount: 95,
+      deliveryTimeMin: 25,
+      deliveryTimeMax: 35,
+      isFastDelivery: false,
+      menus: {
+        create: [
+          {
+            name: '클래식 에그 베네딕트',
+            description: '잉글리쉬 머핀 위에 햄, 수란을 얹고 홀란다이즈 소스를 듬뿍 뿌린 시그니처 브런치.',
+            price: 14000,
+            imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&auto=format&fit=crop&q=60',
+            isPopular: true,
+          },
+          {
+            name: '아메리칸 브랙퍼스트 세트',
+            description: '팬케이크, 소시지, 베이컨, 스크램블 에그와 신선한 샐러드 조합.',
+            price: 16000,
+            imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&auto=format&fit=crop&q=60',
+          },
+        ],
+      },
+    },
+  });
+
+  // 18. 마린시티 오븐 로스트 치킨 (치킨, 한집배달 제공)
+  await prisma.restaurant.create({
+    data: {
+      name: '마린시티 오븐 로스트 치킨',
+      description: '기름기를 쏙 빼서 담백하고 겉바속촉한 정통 오븐구이 로스트 치킨.',
+      category: '치킨',
+      subTags: ['오븐구이', '로스트치킨', '안주'],
+      imageUrl: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600&auto=format&fit=crop&q=60&v=3',
+      rating: 4.8,
+      reviewCount: 220,
+      deliveryTimeMin: 30,
+      deliveryTimeMax: 40,
+      isFastDelivery: true,
+      hasCoupon: true,
+      menus: {
+        create: [
+          {
+            name: '오리지널 갈릭 로스트 치킨',
+            description: '고소한 마늘 소스를 듬뿍 바른 육즙 가득한 오븐 치킨.',
+            price: 19000,
+            imageUrl: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600&auto=format&fit=crop&q=60',
+            isPopular: true,
+          },
+          {
+            name: '스파이시 핫 윙 (12pcs)',
+            description: '입안 가득 알싸하게 매운 소스를 입혀 오븐에 구워낸 닭날개 요리.',
+            price: 18000,
+            imageUrl: 'https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=600&auto=format&fit=crop&q=60',
+          },
+        ],
+      },
+    },
+  });
+
+  // 19. 벡스코 정통 화덕피자 피체리아 (피자, 한집배달 제공)
+  await prisma.restaurant.create({
+    data: {
+      name: '벡스코 정통 화덕피자 피체리아',
+      description: '참나무 장작 가마에서 단시간 고온에 구워 도우가 살아있는 정통 나폴리 피자.',
+      category: '피자',
+      subTags: ['정통피자', '콰트로', '도우존맛'],
+      imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=60&v=3',
+      rating: 4.9,
+      reviewCount: 188,
+      deliveryTimeMin: 25,
+      deliveryTimeMax: 35,
+      isFastDelivery: true,
+      menus: {
+        create: [
+          {
+            name: '콰트로 포르마지오 화덕피자',
+            description: '모짜렐라, 고르곤졸라, 체다, 그라나파다노 4가지 치즈의 고소하고 찐한 화덕 피자.',
+            price: 23000,
+            imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=60',
+            isPopular: true,
+          },
+          {
+            name: '프로슈토 루꼴라 피자',
+            description: '짭조름한 이탈리아 생햄 프로슈토와 향긋한 와일드 루꼴라가 듬뿍 올라간 피자.',
+            price: 25000,
+            imageUrl: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=600&auto=format&fit=crop&q=60',
+          },
+        ],
+      },
+    },
+  });
+
+  // 20. 장산역 타이 아시아로드 (아시안, 한집배달 미제공)
+  await prisma.restaurant.create({
+    data: {
+      name: '장산역 타이 아시아로드',
+      description: '태국 현지의 길거리 향취를 볶음밥과 사이드로 선보이는 로컬 아시안 키친.',
+      category: '아시안',
+      subTags: ['팟타이', '카오팟', '태국스트리트'],
+      imageUrl: 'https://images.unsplash.com/photo-1626804475315-9644b37a2fe4?w=600&auto=format&fit=crop&q=60&v=3',
+      rating: 4.6,
+      reviewCount: 78,
+      deliveryTimeMin: 20,
+      deliveryTimeMax: 30,
+      isFastDelivery: false,
+      menus: {
+        create: [
+          {
+            name: '카오팟 사파롯 (파인애플 볶음밥)',
+            description: '파인애플, 새우, 캐슈넛을 옐로우 커리 파우더와 피시소스로 볶아낸 달콤고소 볶음밥.',
+            price: 13000,
+            imageUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&auto=format&fit=crop&q=60',
+            isPopular: true,
+          },
+          {
+            name: '태국식 모듬 춘권 (짜조 6pcs)',
+            description: '다진 돼지고기와 야채를 춘권피에 싸서 바삭하게 구워내 칠리소스와 곁들이는 에피타이저.',
+            price: 6000,
+            imageUrl: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&auto=format&fit=crop&q=60',
           },
         ],
       },

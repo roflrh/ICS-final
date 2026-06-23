@@ -37,6 +37,24 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState('전체');
   const [loading, setLoading] = useState(true);
 
+  // 카테고리 가로 휠 스크롤 지원용 ref 및 effect
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) {
+      const handleWheel = (e: WheelEvent) => {
+        if (e.deltaY === 0) return;
+        e.preventDefault();
+        el.scrollLeft += e.deltaY * 1.2;
+      };
+      el.addEventListener('wheel', handleWheel, { passive: false });
+      return () => {
+        el.removeEventListener('wheel', handleWheel);
+      };
+    }
+  }, []);
+
   // 그리드 크기 및 다중 필터/정렬 상태 추가
   const [viewSize, setViewSize] = useState<'large' | 'medium' | 'small'>('medium');
   const [onlyFastDelivery, setOnlyFastDelivery] = useState(false);
@@ -140,22 +158,34 @@ export default function HomePage() {
         
         {/* 카테고리 가로 스크롤 칩 리스트 */}
         <div
+          ref={scrollRef}
           style={{
             display: 'flex',
             gap: '12px',
             overflowX: 'auto',
-            padding: '8px 4px',
+            padding: '8px 4px 12px 4px',
             margin: '0 -4px',
             whiteSpace: 'nowrap',
             maxWidth: '650px',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
+            scrollbarWidth: 'thin',
+            msOverflowStyle: 'auto',
             WebkitOverflowScrolling: 'touch',
           }}
         >
           <style>{`
             div::-webkit-scrollbar {
-              display: none;
+              height: 5px;
+            }
+            div::-webkit-scrollbar-track {
+              background: #f1f5f9;
+              border-radius: 3px;
+            }
+            div::-webkit-scrollbar-thumb {
+              background: #cbd5e1;
+              border-radius: 3px;
+            }
+            div::-webkit-scrollbar-thumb:hover {
+              background: #94a3b8;
             }
           `}</style>
           {CATEGORIES.map((category) => (
