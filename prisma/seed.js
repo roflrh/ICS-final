@@ -42,8 +42,16 @@ function getDefaultFoodImage(name, category) {
   if (lowerName.includes('핫 윙') || lowerName.includes('핫윙') || lowerName.includes('스파이시 핫 윙') || lowerName.includes('닭날개')) {
     return '/images/default/hot_wings.jpg';
   }
-  // 치킨, 닭강정, 윙, 똥집
-  if (lowerName.includes('치킨') || lowerName.includes('닭강정') || lowerName.includes('닭') || lowerName.includes('똥집') || lowerName.includes('윙')) {
+  // 닭강정
+  if (lowerName.includes('닭강정')) {
+    return '/images/default/dakgangjeong.jpg';
+  }
+  // 똥집튀김
+  if (lowerName.includes('똥집')) {
+    return '/images/default/fried_gizzards.jpg';
+  }
+  // 치킨, 윙, 닭
+  if (lowerName.includes('치킨') || lowerName.includes('닭') || lowerName.includes('윙')) {
     return '/images/default/chicken.jpg';
   }
   // 두부 사리
@@ -82,6 +90,10 @@ function getDefaultFoodImage(name, category) {
   if (lowerName.includes('우육탕') || lowerName.includes('우육탕면') || lowerName.includes('대만식 탕면')) {
     return '/images/default/beef_noodles.jpg';
   }
+  // 돼지국밥, 국밥
+  if (lowerName.includes('국밥') || lowerName.includes('돼지국밥')) {
+    return '/images/default/gukbap.jpg';
+  }
   // 라멘, 탕면, 국수
   if (lowerName.includes('라멘') || lowerName.includes('탕면') || lowerName.includes('국수')) {
     return '/images/default/noodle.jpg';
@@ -110,6 +122,10 @@ function getDefaultFoodImage(name, category) {
   if (lowerName.includes('돈카츠') || lowerName.includes('카츠') || lowerName.includes('돈까스')) {
     return '/images/default/tonkatsu.jpg';
   }
+  // 차슈덮밥, 덮밥
+  if (lowerName.includes('덮밥') || lowerName.includes('차슈')) {
+    return '/images/default/chashu_don.jpg';
+  }
   // 버거
   if (lowerName.includes('버거') || lowerName.includes('패티')) {
     return '/images/default/burger.jpg';
@@ -125,6 +141,10 @@ function getDefaultFoodImage(name, category) {
   // 파인애플 볶음밥
   if (lowerName.includes('파인애플') || lowerName.includes('사파롯') || lowerName.includes('카오팟')) {
     return '/images/default/pineapple_fried_rice.jpg';
+  }
+  // 나시고랭, 볶음밥 (파인애플 볶음밥 제외)
+  if (lowerName.includes('볶음밥') || lowerName.includes('나시고랭')) {
+    return '/images/default/fried_rice.jpg';
   }
   // 루꼴라 샐러드, 샐러드
   if (lowerName.includes('샐러드') || lowerName.includes('루꼴라')) {
@@ -152,7 +172,7 @@ function getDefaultFoodImage(name, category) {
     const cat = category.trim();
     if (cat === '한식') {
       if (lowerName.includes('김치찜') || lowerName.includes('김치찜 명가')) return '/images/default/kimchijjim.jpg';
-      if (lowerName.includes('국밥')) return '/images/default/noodle.jpg';
+      if (lowerName.includes('국밥')) return '/images/default/gukbap.jpg';
       return '/images/default/samgyeopsal.jpg';
     }
     if (cat === '일식') {

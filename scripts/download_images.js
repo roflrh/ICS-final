@@ -4,7 +4,7 @@ const https = require('https');
 
 // 1. 다운로드 대상 이미지 매핑 (신규 정교화 이미지 리스트)
 const images = [
-  { name: 'samgyeopsal.jpg', url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&auto=format&fit=crop&q=60' },
+  { name: 'samgyeopsal.jpg', url: 'https://images.unsplash.com/photo-1630175860333-5131bda75071?w=800&auto=format&fit=crop&q=60' },
   { name: 'pork_ribs.jpg', url: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=60' },
   { name: 'stew.jpg', url: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=800&auto=format&fit=crop&q=60' },
   { name: 'pasta.jpg', url: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&auto=format&fit=crop&q=60' },
@@ -39,7 +39,14 @@ const images = [
   { name: 'cheese_tonkatsu.jpg', url: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=800&auto=format&fit=crop&q=60' },
   { name: 'cold_soba.jpg', url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=60' },
   { name: 'pineapple_fried_rice.jpg', url: 'https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?w=800&auto=format&fit=crop&q=60' },
-  { name: 'spring_rolls.jpg', url: 'https://images.unsplash.com/photo-1607532941433-304659e8198a?w=800&auto=format&fit=crop&q=60' }
+  { name: 'spring_rolls.jpg', url: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=800&auto=format&fit=crop&q=60' },
+
+  // 4. 3차 피드백 세부 분류 이미지 (닭강정, 차슈덮밥, 돼지국밥, 볶음밥, 똥집튀김)
+  { name: 'chashu_don.jpg', url: 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=800&auto=format&fit=crop&q=60' },
+  { name: 'dakgangjeong.jpg', url: 'https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=800&auto=format&fit=crop&q=60' },
+  { name: 'gukbap.jpg', url: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=800&auto=format&fit=crop&q=60' },
+  { name: 'fried_rice.jpg', url: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800&auto=format&fit=crop&q=60' },
+  { name: 'fried_gizzards.jpg', url: 'https://images.unsplash.com/photo-1562967916-eb82221dfb92?w=800&auto=format&fit=crop&q=60' }
 ];
 
 const targetDir = path.join(__dirname, '..', 'public', 'images', 'default');
