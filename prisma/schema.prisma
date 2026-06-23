@@ -27,6 +27,7 @@ model Restaurant {
   description     String
   imageUrl        String
   category        String
+  subTags         String[] @default([])   // 보조 태그 (Postgres 배열)
   rating          Float?   @default(4.5)   // 신규 식당에 대한 평점 미누적 상태(null) 지원
   reviewCount     Int?     @default(0)     // 누적 리뷰 수
   deliveryTimeMin Int?     @default(20)    // 배달 예상 시간 최소 범위 (분)

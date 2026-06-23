@@ -9,6 +9,7 @@ interface Restaurant {
   description: string;
   imageUrl: string;
   category: string;
+  subTags: string[]; // [NEW] 보조 태그 배열 추가
   rating: number | null;
   reviewCount: number;
   deliveryTimeMin: number;
@@ -532,6 +533,24 @@ export default function HomePage() {
                   <span>•</span>
                   <span>⏱️ {restaurant.deliveryTimeMin}~{restaurant.deliveryTimeMax}분</span>
                 </div>
+
+                {/* 새로 추가: subTags (최대 3개 노출) */}
+                {restaurant.subTags && restaurant.subTags.length > 0 && (
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                    {restaurant.subTags.slice(0, 3).map((tag) => (
+                      <span key={tag} style={{ 
+                        fontSize: '0.72rem', 
+                        padding: '2px 8px', 
+                        background: '#f1f5f9',
+                        color: 'var(--text-muted)',
+                        borderRadius: '4px',
+                        fontWeight: '600'
+                      }}>
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
                 <p
                   style={{
