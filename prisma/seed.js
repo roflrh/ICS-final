@@ -38,9 +38,21 @@ function getDefaultFoodImage(name, category) {
   if (lowerName.includes('로스트 치킨') || lowerName.includes('로스트치킨') || lowerName.includes('오븐구이') || lowerName.includes('오븐 로스트')) {
     return '/images/default/roast_chicken.jpg';
   }
+  // 스파이시 핫 윙 (핫윙)
+  if (lowerName.includes('핫 윙') || lowerName.includes('핫윙') || lowerName.includes('스파이시 핫 윙') || lowerName.includes('닭날개')) {
+    return '/images/default/hot_wings.jpg';
+  }
   // 치킨, 닭강정, 윙, 똥집
   if (lowerName.includes('치킨') || lowerName.includes('닭강정') || lowerName.includes('닭') || lowerName.includes('똥집') || lowerName.includes('윙')) {
     return '/images/default/chicken.jpg';
+  }
+  // 두부 사리
+  if (lowerName.includes('두부') || lowerName.includes('두부 사리') || lowerName.includes('손두부')) {
+    return '/images/default/tofu_sari.jpg';
+  }
+  // 계란말이
+  if (lowerName.includes('계란말이')) {
+    return '/images/default/rolled_omelet.jpg';
   }
   // 찌개, 전골, 국물
   if (lowerName.includes('된장찌개') || lowerName.includes('찌개') || lowerName.includes('곱창전골') || lowerName.includes('전골')) {
@@ -66,19 +78,35 @@ function getDefaultFoodImage(name, category) {
   if (lowerName.includes('팟타이') || lowerName.includes('볶음면')) {
     return '/images/default/thai_noodle.jpg';
   }
-  // 라멘, 탕면
-  if (lowerName.includes('라멘') || lowerName.includes('우육탕') || lowerName.includes('탕면') || lowerName.includes('국수')) {
+  // 우육탕, 우육탕면
+  if (lowerName.includes('우육탕') || lowerName.includes('우육탕면') || lowerName.includes('대만식 탕면')) {
+    return '/images/default/beef_noodles.jpg';
+  }
+  // 라멘, 탕면, 국수
+  if (lowerName.includes('라멘') || lowerName.includes('탕면') || lowerName.includes('국수')) {
     return '/images/default/noodle.jpg';
+  }
+  // 냉모밀, 메밀
+  if (lowerName.includes('모밀') || lowerName.includes('냉모밀') || lowerName.includes('메밀')) {
+    return '/images/default/cold_soba.jpg';
   }
   // 푸팟퐁커리
   if (lowerName.includes('푸팟퐁') || lowerName.includes('푸팟퐁커리') || lowerName.includes('커리')) {
     return '/images/default/poo_phat_pong_curry.jpg';
   }
-  // 딤섬, 만두, 짜조
-  if (lowerName.includes('딤섬') || lowerName.includes('만두') || lowerName.includes('하가우') || lowerName.includes('샤오롱바오') || lowerName.includes('짜조') || lowerName.includes('춘권') || lowerName.includes('교자')) {
+  // 태국식 춘권, 짜조, 롤 튀김
+  if (lowerName.includes('춘권') || lowerName.includes('짜조')) {
+    return '/images/default/spring_rolls.jpg';
+  }
+  // 딤섬, 만두
+  if (lowerName.includes('딤섬') || lowerName.includes('만두') || lowerName.includes('하가우') || lowerName.includes('샤오롱바오') || lowerName.includes('교자')) {
     return '/images/default/dumpling.jpg';
   }
-  // 돈카츠
+  // 치즈 돈카츠
+  if (lowerName.includes('치즈듬뿍') || lowerName.includes('치즈돈카츠') || lowerName.includes('치즈카츠')) {
+    return '/images/default/cheese_tonkatsu.jpg';
+  }
+  // 돈카츠, 돈까스
   if (lowerName.includes('돈카츠') || lowerName.includes('카츠') || lowerName.includes('돈까스')) {
     return '/images/default/tonkatsu.jpg';
   }
@@ -93,6 +121,10 @@ function getDefaultFoodImage(name, category) {
   // 사시미, 회
   if (lowerName.includes('사시미') || lowerName.includes('회') || lowerName.includes('활어회')) {
     return '/images/default/sashimi.jpg';
+  }
+  // 파인애플 볶음밥
+  if (lowerName.includes('파인애플') || lowerName.includes('사파롯') || lowerName.includes('카오팟')) {
+    return '/images/default/pineapple_fried_rice.jpg';
   }
   // 루꼴라 샐러드, 샐러드
   if (lowerName.includes('샐러드') || lowerName.includes('루꼴라')) {
@@ -113,10 +145,6 @@ function getDefaultFoodImage(name, category) {
   // 꿔바로우
   if (lowerName.includes('꿔바로우')) {
     return '/images/default/gguobarou.jpg';
-  }
-  // 모밀, 냉모밀
-  if (lowerName.includes('모밀')) {
-    return '/images/default/noodle.jpg';
   }
 
   // 2. 카테고리 기반 매칭 (식당 디폴트 이미지 등)

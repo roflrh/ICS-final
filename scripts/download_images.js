@@ -33,7 +33,13 @@ const images = [
   { name: 'poo_phat_pong_curry.jpg', url: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=800&auto=format&fit=crop&q=60' },
   { name: 'egg_benedict.jpg', url: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=800&auto=format&fit=crop&q=60' },
   { name: 'american_breakfast.jpg', url: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&auto=format&fit=crop&q=60' },
-  { name: 'kimchijjim.jpg', url: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=800&auto=format&fit=crop&q=60' }
+  { name: 'kimchijjim.jpg', url: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=800&auto=format&fit=crop&q=60' },
+  
+  // 3. 2차 피드백 추가 세부 분류 이미지
+  { name: 'cheese_tonkatsu.jpg', url: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=800&auto=format&fit=crop&q=60' },
+  { name: 'cold_soba.jpg', url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=60' },
+  { name: 'pineapple_fried_rice.jpg', url: 'https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?w=800&auto=format&fit=crop&q=60' },
+  { name: 'spring_rolls.jpg', url: 'https://images.unsplash.com/photo-1607532941433-304659e8198a?w=800&auto=format&fit=crop&q=60' }
 ];
 
 const targetDir = path.join(__dirname, '..', 'public', 'images', 'default');
