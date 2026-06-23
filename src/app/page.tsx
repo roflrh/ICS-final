@@ -17,7 +17,7 @@ interface Restaurant {
   hasCoupon: boolean; // [NEW] DB 쿠폰 유무 필드
 }
 
-const CATEGORIES = ['전체', '한식', '중식', '일식', '양식', '패스트푸드', '아시안'];
+const CATEGORIES = ['전체', '한식', '중식', '일식', '양식', '버거', '피자', '치킨', '아시안'];
 
 const CATEGORY_EMOJIS: Record<string, string> = {
   '전체': '🍽️ 전체',
@@ -25,7 +25,9 @@ const CATEGORY_EMOJIS: Record<string, string> = {
   '중식': '🥢 중식',
   '일식': '🍣 일식',
   '양식': '🍝 양식',
-  '패스트푸드': '🍔 패스트푸드',
+  '버거': '🍔 버거',
+  '피자': '🍕 피자',
+  '치킨': '🍗 치킨',
   '아시안': '🍜 아시안',
 };
 

@@ -25,7 +25,7 @@ async function main() {
       name: '해운대 삼겹살 본점',
       description: '숯불향 가득한 초벌 생삼겹살 전문점입니다.',
       category: '한식',
-      imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?w=600&auto=format&fit=crop&q=60',
       rating: 4.8,
       reviewCount: 142,
       deliveryTimeMin: 25,
@@ -142,7 +142,7 @@ async function main() {
       name: '장산역 돈카츠 하우스',
       description: '제주산 흑돼지를 엄선하여 24시간 숙성 후 튀겨낸 프리미엄 카츠.',
       category: '일식',
-      imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=600&auto=format&fit=crop&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1598103442097-8b743e43a1c6?w=600&auto=format&fit=crop&q=60',
       rating: 4.9,
       reviewCount: 210,
       deliveryTimeMin: 20,
@@ -218,7 +218,7 @@ async function main() {
     data: {
       name: '송정해변 수제버거 조인트',
       description: '100% 프라임 소고기 패티 and 매일 구워내는 고소한 번의 정통 아메리칸 수제버거.',
-      category: '패스트푸드',
+      category: '버거',
       imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=60',
       rating: 4.8,
       reviewCount: 320,
@@ -290,13 +290,13 @@ async function main() {
     },
   });
 
-  // 8. 해운대 전통시장 닭강정 (한식, 한집배달 미제공)
+  // 8. 해운대 전통시장 닭강정 (치킨, 한집배달 미제공)
   await prisma.restaurant.create({
     data: {
       name: '해운대 전통시장 닭강정',
       description: '3대째 내려오는 특제 조청 소스로 버무려 식어도 바삭하고 맛있는 닭강정 명가.',
-      category: '패스트푸드',
-      imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=60',
+      category: '치킨',
+      imageUrl: 'https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=600&auto=format&fit=crop&q=60',
       rating: 4.8,
       reviewCount: 415,
       deliveryTimeMin: 20,
@@ -333,7 +333,7 @@ async function main() {
     data: {
       name: '미포항 화덕피자 팩토리',
       description: '참나무 장작 화덕에서 400도 고온으로 빠르게 구워내 도우가 쫄깃한 나폴리 피자.',
-      category: '패스트푸드',
+      category: '피자',
       imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=60',
       rating: 4.9,
       reviewCount: 180,
@@ -406,19 +406,19 @@ async function main() {
   });
 
   // 11. 재송동 소곱창 전골집 (한식, 한집배달 미제공)
-  // 오류가 났던 전골 이미지 주소를 검증된 사골찌개용 Unsplash 이미지로 대체
+  // 오류가 났던 전골 이미지 주소를 검증된 곱창전골용 Unsplash 이미지로 대체
   await prisma.restaurant.create({
     data: {
       name: '재송동 소곱창 전골집',
       description: '깨끗하게 손질된 소곱창과 대창을 비법 다대기와 함께 졸여가며 먹는 얼큰 전골.',
       category: '한식',
-      imageUrl: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=60',
+      hasCoupon: true,
+      imageUrl: 'https://images.unsplash.com/photo-1618331835717-801e976710b2?w=600&auto=format&fit=crop&q=60',
       rating: 4.7,
       reviewCount: 195,
       deliveryTimeMin: 25,
       deliveryTimeMax: 40,
       isFastDelivery: false,
-      hasCoupon: true,
       menus: {
         create: [
           {
@@ -489,13 +489,13 @@ async function main() {
       name: '우동 김치찜 명가',
       description: '푹 익은 전라도식 묵은지와 국내산 돼지갈비를 뭉근하게 끓여낸 정통 한식 찜 요리.',
       category: '한식',
+      hasCoupon: true,
       imageUrl: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=600&auto=format&fit=crop&q=60',
       rating: 4.8,
       reviewCount: 280,
       deliveryTimeMin: 25,
       deliveryTimeMax: 35,
       isFastDelivery: true,
-      hasCoupon: true,
       menus: {
         create: [
           {
